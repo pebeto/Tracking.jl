@@ -1,9 +1,16 @@
 module TrackingAPI
 
-using Compat
 using HTTP
 using Dates
+using Compat
 using Oxygen
+using SQLite
+using Memoize
+
+include("utils.jl")
+
+include("repositories/sql/database.jl")
+include("repositories/database.jl")
 
 include("routes/health.jl")
 
@@ -17,8 +24,11 @@ and port by passing the `host` and `port` arguments.
 """
 function run(;
     host::String="127.0.0.1",
-    port::Int=9000
+    port::Int=9000,
+    env_file::String=".env",
 )
+    load_env_file(env_file)
+
     health_router = router("/health", tags=["health"])
 
     @get health_router("/") get_health
