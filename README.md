@@ -1,5 +1,6 @@
 # TrackingAPI.jl
 [![CI](https://github.com/pebeto/TrackingAPI.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/pebeto/TrackingAPI.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/github/pebeto/TrackingAPI.jl/graph/badge.svg?token=Z01WPRJDNR)](https://codecov.io/github/pebeto/TrackingAPI.jl)
 
 A full-featured solution for machine learning lifecycle (made in Julia) with a focus on tracking and reproducibility.
 
