@@ -60,13 +60,13 @@ end
 Update a [`Project`](@ref) record.
 
 # Arguments
-- `id::Int`: The id of the project to update.
+- `id::Integer`: The id of the project to update.
 - `project_payload::ProjectUpdatePayload`: The payload for updating a project.
 
 # Returns
 An [`UpsertResult`](@ref). [`Updated`](@ref) if the record was successfully updated (or no changes were made), [`Duplicate`](@ref) if the record already exists, [`Unprocessable`](@ref) if the record violates a constraint, and [`Error`](@ref) if an error occurred while creating the record.
 """
-function update_project(id::Int, project_payload::ProjectUpdatePayload)::UpsertResult
+function update_project(id::Integer, project_payload::ProjectUpdatePayload)::UpsertResult
     project = fetch(Project, id)
 
     should_be_updated = compare_object_fields(
@@ -88,7 +88,7 @@ end
 """
     delete_project(id::Int)::Bool
 
-Delete a [`Project`](@ref) record. Also deletes all associated [`UserPermission`](@ref).
+Delete a [`Project`](@ref) record. Also deletes all associated [`UserPermission`](@ref) and [`Experiment`](@ref) records.
 
 # Arguments
 - `id::Int`: The id of the project to delete.
@@ -100,5 +100,6 @@ function delete_project(id::Int)::Bool
     project = fetch(Project, id)
 
     delete(UserPermission, project)
+    delete_experiments(project)
     return delete(Project, id)
 end

@@ -9,7 +9,6 @@ using Memoize
 
 using TrackingAPI
 
-
 """
     create_test_env_file()::String
 
@@ -18,9 +17,13 @@ Create a test environment file for the API server.
 # Returns
 A string representing the path to the created test environment file.
 """
-function create_test_env_file(; host::String="127.0.0.1",
-    db_file::String="trackingapi_test.db", jwt_secret::Union{String,Nothing}=nothing,
-    enable_auth::Bool=false, enable_api::Bool=false)::String
+function create_test_env_file(;
+    host::String="127.0.0.1",
+    db_file::String="trackingapi_test.db",
+    jwt_secret::Union{String,Nothing}=nothing,
+    enable_auth::Bool=false,
+    enable_api::Bool=false
+)::String
     file = ".env.trackingapitest"
 
     open(file, "w") do io
@@ -65,12 +68,15 @@ include("repositories/user.jl")
 include("repositories/project.jl")
 include("repositories/userpermission.jl")
 include("repositories/experiment.jl")
+include("repositories/iteration.jl")
 include("repositories/utils.jl")
 
 include("services/user.jl")
 include("services/utils.jl")
 include("services/project.jl")
 include("services/userpermission.jl")
+include("services/experiment.jl")
+include("services/iteration.jl")
 
 file |> rm
 

@@ -1,7 +1,10 @@
 @with_trackingapi_test_db begin
     @testset verbose = true "project repository" begin
         @testset verbose = true "insert" begin
-            @test TrackingAPI.insert(TrackingAPI.Project, "Project Missy") isa Tuple{Integer,TrackingAPI.Created}
+            @test TrackingAPI.insert(
+                TrackingAPI.Project,
+                "Project Missy",
+            ) isa Tuple{Integer,TrackingAPI.Created}
         end
 
         @testset verbose = true "fetch" begin
@@ -24,7 +27,11 @@
         end
 
         @testset verbose = true "update" begin
-            @test TrackingAPI.update(TrackingAPI.Project, 1; name="Project Choclo", description="Updated project") isa TrackingAPI.Updated
+            @test TrackingAPI.update(
+                TrackingAPI.Project, 1;
+                name="Project Choclo",
+                description="Updated project"
+            ) isa TrackingAPI.Updated
 
             project = TrackingAPI.fetch(TrackingAPI.Project, 1)
 

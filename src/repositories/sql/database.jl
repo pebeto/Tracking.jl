@@ -72,6 +72,17 @@ const SQL_CREATE_EXPERIMENT = """
     )
     """
 
+const SQL_CREATE_ITERATION = """
+    CREATE TABLE IF NOT EXISTS iteration (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        experiment_id INTEGER NOT NULL,
+        notes TEXT DEFAULT '',
+        created_date TEXT NOT NULL CHECK (created_date <> ''),
+        end_date TEXT DEFAULT '',
+        FOREIGN KEY(experiment_id) REFERENCES experiment(id)
+    )
+    """
+
 const SQL_CREATE_TAG = """
     CREATE TABLE IF NOT EXISTS tag (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

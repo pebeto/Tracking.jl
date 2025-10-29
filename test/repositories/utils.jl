@@ -1,12 +1,35 @@
 @with_trackingapi_test_db begin
     @testset verbose = true "repository utils" begin
         @testset verbose = true "insert" begin
-            @test TrackingAPI.insert(TrackingAPI.SQL_INSERT_USER, (username="missy", password="gala", first_name="Missy", last_name="Gala", created_date=now())) isa Tuple{Integer,TrackingAPI.Created}
-            @test TrackingAPI.insert(TrackingAPI.SQL_INSERT_USER, (username="gala", password="missy", first_name="Gala", last_name="Missy", created_date=now())) isa Tuple{Integer,TrackingAPI.Created}
+            first_user = (
+                username="missy",
+                password="gala",
+                first_name="Missy",
+                last_name="Gala",
+                created_date=now(),
+            )
+            @test TrackingAPI.insert(
+                TrackingAPI.SQL_INSERT_USER,
+                first_user,
+            ) isa Tuple{Integer,TrackingAPI.Created}
+            second_user = (
+                username="gala",
+                password="missy",
+                first_name="Gala",
+                last_name="Missy",
+                created_date=now(),
+            )
+            @test TrackingAPI.insert(
+                TrackingAPI.SQL_INSERT_USER,
+                second_user,
+            ) isa Tuple{Integer,TrackingAPI.Created}
         end
 
         @testset verbose = true "fetch" begin
-            user = TrackingAPI.fetch(TrackingAPI.SQL_SELECT_USER_BY_USERNAME, (username="missy",))
+            user = TrackingAPI.fetch(
+                TrackingAPI.SQL_SELECT_USER_BY_USERNAME,
+                (username="missy",),
+            )
 
             @test user isa Dict{Symbol,Any}
             @test user[:id] isa Int
@@ -21,11 +44,21 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.fetch(TrackingAPI.SQL_SELECT_USER_BY_ID, (id=2,)) |> TrackingAPI.User
+            user = TrackingAPI.fetch(
+                TrackingAPI.SQL_SELECT_USER_BY_ID,
+                (id=2,),
+            ) |> TrackingAPI.User
 
-            @test TrackingAPI.update(TrackingAPI.SQL_UPDATE_USER, user; first_name="Ana", last_name=nothing) isa TrackingAPI.Updated
+            @test TrackingAPI.update(
+                TrackingAPI.SQL_UPDATE_USER, user;
+                first_name="Ana",
+                last_name=nothing,
+            ) isa TrackingAPI.Updated
 
-            user = TrackingAPI.fetch(TrackingAPI.SQL_SELECT_USER_BY_USERNAME, (username="missy",))
+            user = TrackingAPI.fetch(
+                TrackingAPI.SQL_SELECT_USER_BY_USERNAME,
+                (username="missy",),
+            )
             @test user[:first_name] == "Ana"
             @test user[:last_name] == "Gala"
         end
@@ -33,12 +66,17 @@
         @testset verbose = true "delete" begin
             @test TrackingAPI.delete(TrackingAPI.SQL_DELETE_USER, 2)
 
-            @test TrackingAPI.fetch(TrackingAPI.SQL_SELECT_USER_BY_USERNAME, (username="missy",)) |> isnothing
+            @test TrackingAPI.fetch(
+                TrackingAPI.SQL_SELECT_USER_BY_USERNAME,
+                (username="missy",),
+            ) |> isnothing
         end
 
         @testset verbose = true "row to dict" begin
-            rows = DBInterface.execute(TrackingAPI.get_database(),
-                "SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name")
+            rows = DBInterface.execute(
+                TrackingAPI.get_database(),
+                "SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name",
+            )
             row_dict = rows |> first |> TrackingAPI.Dict
 
             @test row_dict isa Dict

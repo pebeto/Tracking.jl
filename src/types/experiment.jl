@@ -30,12 +30,10 @@ A struct representing the payload for creating a new experiment.
 Fields
 - `status_id`: The status of the experiment.
 - `name`: The name of the experiment.
-- `description`: A description of the experiment.
 """
 struct ExperimentCreatePayload <: UpsertType
     status_id::Status
     name::String
-    description::String
 end
 
 """
