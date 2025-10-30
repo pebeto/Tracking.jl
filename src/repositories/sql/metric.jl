@@ -3,7 +3,7 @@ const SQL_SELECT_METRIC_BY_ID = """
         p.id,
         p.iteration_id,
         p.key,
-        p.value,
+        p.value
     FROM metric p WHERE p.id = :id
     """
 
@@ -12,7 +12,7 @@ const SQL_SELECT_METRICS_BY_ITERATION_ID = """
         p.id,
         p.iteration_id,
         p.key,
-        p.value,
+        p.value
     FROM metric p WHERE p.iteration_id = :id
     """
 

@@ -3,7 +3,7 @@ const SQL_SELECT_PARAMETER_BY_ID = """
         p.id,
         p.iteration_id,
         p.key,
-        p.value,
+        p.value
     FROM parameter p WHERE p.id = :id
     """
 
@@ -12,7 +12,7 @@ const SQL_SELECT_PARAMETERS_BY_ITERATION_ID = """
         p.id,
         p.iteration_id,
         p.key,
-        p.value,
+        p.value
     FROM parameter p WHERE p.iteration_id = :id
     """
 

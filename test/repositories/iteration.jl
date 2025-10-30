@@ -121,8 +121,7 @@
                 )
                 iteration_id, _ = TrackingAPI.insert(TrackingAPI.Iteration, experiment_id)
 
-                delete_result = TrackingAPI.delete(TrackingAPI.Iteration, iteration_id)
-                @test delete_result
+                @test TrackingAPI.delete(TrackingAPI.Iteration, iteration_id)
 
                 iteration = TrackingAPI.fetch(TrackingAPI.Iteration, iteration_id)
                 @test iteration |> isnothing
@@ -145,8 +144,7 @@
                 TrackingAPI.insert(TrackingAPI.Iteration, experiment_id)
                 TrackingAPI.insert(TrackingAPI.Iteration, experiment_id)
 
-                delete_result = TrackingAPI.delete(TrackingAPI.Iteration, experiment)
-                @test delete_result
+                @test TrackingAPI.delete(TrackingAPI.Iteration, experiment)
 
                 iterations = TrackingAPI.fetch_all(TrackingAPI.Iteration, experiment_id)
                 @test iterations |> isempty

@@ -39,6 +39,8 @@ include("repositories/project.jl")
 include("repositories/userpermission.jl")
 include("repositories/experiment.jl")
 include("repositories/iteration.jl")
+include("repositories/parameter.jl")
+include("repositories/metric.jl")
 
 include("services/utils.jl")
 include("services/user.jl")
