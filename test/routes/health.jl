@@ -3,7 +3,7 @@
 
     @test response.status == HTTP.StatusCodes.OK
 
-    data = response.body |> String |> JSON.parse
+    data = JSON.parse(response.body |> String, Dict{String,Any})
     data_keys = data |> keys
 
     @test "app_name" in data_keys

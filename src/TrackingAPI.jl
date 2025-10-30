@@ -2,13 +2,13 @@ module TrackingAPI
 
 using Oxygen: headers
 using HTTP
+using JWTs
 using Dates
 using Bcrypt
 using Compat
 using Oxygen
 using SQLite
 using Memoize
-using JSONWebTokens
 
 include("utils.jl")
 
@@ -48,6 +48,8 @@ include("services/project.jl")
 include("services/userpermission.jl")
 include("services/experiment.jl")
 include("services/iteration.jl")
+include("services/parameter.jl")
+include("services/metric.jl")
 
 include("routes/utils.jl")
 include("routes/health.jl")
@@ -72,11 +74,13 @@ function AuthMiddleware(handler)
                     )
                 end
 
-                token = split(auth_header, " ")[2]
-                encoding = JSONWebTokens.HS256(api_config.jwt_secret)
+                token = split(auth_header, " ")[2] |> string
+                jwt = JWT(; jwt=token)
+                key = JWKSymmetric(JWTs.MD_SHA256, api_config.jwt_secret |> Vector{UInt8})
+                validate!(jwt, key)
 
-                try
-                    payload = JSONWebTokens.decode(encoding, token)
+                if jwt |> isvalid
+                    payload = jwt |> claims
 
                     is_valid_payload = all(
                         claim -> haskey(payload, claim),
@@ -102,10 +106,9 @@ function AuthMiddleware(handler)
                         throw(ArgumentError("User not found"))
                     end
                     request.context[:user] = user
-                catch e
-                    msg = (e isa ArgumentError) ? e.msg : "Invalid token"
+                else
                     return json(
-                        ("message" => msg);
+                        ("message" => "Invalid token"),
                         status=HTTP.StatusCodes.UNAUTHORIZED,
                     )
                 end

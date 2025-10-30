@@ -17,8 +17,9 @@ function auth_handler(::HTTP.Request, parameters::Json{UserLoginPayload})::HTTP.
         "id" => user.id,
         "exp" => (now() + Hour(1)) |> Dates.value,
     )
-    encoding = JSONWebTokens.HS256(api_config.jwt_secret)
-    token = JSONWebTokens.encode(encoding, claims)
+    jwt = JWT(; payload=claims)
+    key = JWKSymmetric(JWTs.MD_SHA256, api_config.jwt_secret |> Vector{UInt8})
+    sign!(jwt, key)
 
-    return json(token; status=HTTP.StatusCodes.OK)
+    return json(jwt |> string; status=HTTP.StatusCodes.OK)
 end

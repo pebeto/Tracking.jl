@@ -24,7 +24,7 @@
                     body=payload,
                     status_exception=false,
                 )
-                token = response.body |> String |> JSON.parse
+                token = JSON.parse(response.body |> String)
 
                 create_payload = Dict(
                     "first_name" => "Missy",
@@ -51,7 +51,7 @@
                     body=payload,
                     status_exception=false,
                 )
-                token = response.body |> String |> JSON.parse
+                token = JSON.parse(response.body |> String)
 
                 create_payload = Dict(
                     "first_name" => "Choclo",

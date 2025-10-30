@@ -15,7 +15,7 @@
             username_user = TrackingAPI.get_user_by_username("missy")
 
             @test response.status == HTTP.StatusCodes.CREATED
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["user_id"] == username_user.id
         end
 
@@ -27,7 +27,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             user = data |> TrackingAPI.User
 
             @test user.id isa Int
@@ -49,7 +49,7 @@
             response = HTTP.get("http://127.0.0.1:9000/user/"; status_exception=false)
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
             users = data .|> TrackingAPI.User
 
             @test users isa Array{TrackingAPI.User,1}
@@ -70,14 +70,14 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "UPDATED"
 
             response = HTTP.get(
                 "http://127.0.0.1:9000/user/$(username_user.id)";
                 status_exception=false,
             )
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             user = data |> TrackingAPI.User
 
             @test user.first_name == "Ana"
@@ -91,7 +91,7 @@
                 status_exception=false,
             )
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "OK"
         end
     end

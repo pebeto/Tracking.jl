@@ -28,7 +28,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.CREATED
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["userpermission_id"] == userpermission.id
         end
 
@@ -54,7 +54,7 @@
 
             @test response.status == HTTP.StatusCodes.OK
 
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             userpermission = data |> TrackingAPI.UserPermission
 
             @test userpermission.id == userpermission_id
@@ -95,7 +95,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "UPDATED"
 
             userpermission = TrackingAPI.get_userpermission_by_user_and_project(
@@ -130,7 +130,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "OK"
 
             userpermission = TrackingAPI.get_userpermission_by_user_and_project(

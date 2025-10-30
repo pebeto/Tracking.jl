@@ -30,8 +30,6 @@
                 status_exception=false,
             )
 
-            data = response.body |> String |> JSON.parse
-
             @test response.status == HTTP.StatusCodes.OK
         end
 
@@ -53,7 +51,7 @@
                     status_exception=false,
                 )
 
-                token = response.body |> String |> JSON.parse
+                token = JSON.parse(response.body |> String)
 
                 response = HTTP.get(
                     "http://127.0.0.1:9000/user/1";

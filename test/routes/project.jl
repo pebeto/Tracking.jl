@@ -9,7 +9,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.CREATED
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["project_id"] == 1
         end
 
@@ -20,7 +20,7 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             project = data |> TrackingAPI.Project
 
             @test project.id isa Int
@@ -40,7 +40,7 @@
             response = HTTP.get("http://127.0.0.1:9000/project/"; status_exception=false)
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
             projects = data .|> TrackingAPI.Project
 
             @test projects isa Array{TrackingAPI.Project,1}
@@ -59,11 +59,11 @@
             )
 
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "UPDATED"
 
             response = HTTP.get("http://127.0.0.1:9000/project/2"; status_exception=false)
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             project = data |> TrackingAPI.Project
 
             @test project.name == "Gala project"
@@ -76,7 +76,7 @@
                 status_exception=false,
             )
             @test response.status == HTTP.StatusCodes.OK
-            data = response.body |> String |> JSON.parse
+            data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "OK"
         end
     end

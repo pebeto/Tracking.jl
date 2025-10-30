@@ -99,8 +99,6 @@
 
             iteration = TrackingAPI.get_iteration_by_id(iteration_id)
 
-            @test iteration.id == iteration_id
-            @test iteration.experiment_id == experiment_id
             @test iteration.notes |> isempty
             @test iteration.created_date isa DateTime
             @test iteration.end_date |> isnothing

@@ -41,10 +41,7 @@ function create_iteration(experiment_id::Integer)::Tuple{Optional{<:Int64},Upser
         return nothing, Unprocessable()
     end
 
-    iteration_id, iteration_upsert_result = insert(
-        Iteration,
-        experiment_id,
-    )
+    iteration_id, iteration_upsert_result = insert(Iteration, experiment_id)
     if !(iteration_upsert_result isa Created)
         return nothing, iteration_upsert_result
     end
@@ -66,7 +63,7 @@ An [`UpsertResult`](@ref). [`Updated`](@ref) if the record was successfully upda
 function update_iteration(
     id::Integer, iteration_payload::IterationUpdatePayload
 )::UpsertResult
-    iteration = fetch(Iteration, id)
+    iteration = id |> get_iteration_by_id
     if iteration |> isnothing
         return Unprocessable()
     end

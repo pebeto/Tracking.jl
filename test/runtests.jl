@@ -79,6 +79,8 @@ include("services/project.jl")
 include("services/userpermission.jl")
 include("services/experiment.jl")
 include("services/iteration.jl")
+include("services/parameter.jl")
+include("services/metric.jl")
 
 file |> rm
 
