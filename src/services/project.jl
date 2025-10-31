@@ -55,6 +55,22 @@ function create_project(
 end
 
 """
+    create_project(name::AbstractString)::Tuple{Optional{<:Int64},UpsertResult}
+
+Create a [`Project`](@ref). Uses the "default" user to create the project.
+
+# Arguments
+- `name::AbstractString`: The name of the project.
+
+# Returns
+An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully created, [`Duplicate`](@ref) if the record already exists, [`Unprocessable`](@ref) if the record violates a constraint, and [`Error`](@ref) if an error occurred while creating the record.
+"""
+function create_project(name::AbstractString)::Tuple{Optional{<:Int64},UpsertResult}
+    default_user = get_user_by_username("default")
+    return create_project(default_user.id, name)
+end
+
+"""
     update_project(id::Int, name::Optional{AbstractString}, description::Optional{AbstractString})::UpsertResult
 
 Update a [`Project`](@ref) record.

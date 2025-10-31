@@ -1,14 +1,34 @@
 @with_trackingapi_test_db begin
     @testset verbose = true "project service" begin
         @testset verbose = true "create project" begin
-            user = TrackingAPI.get_user_by_username("default")
-            project_id, project_upsert_result = TrackingAPI.create_project(
-                user.id,
-                "Test Project",
-            )
+            @testset verbose = true "with user_id as argument" begin
+                user_id, _ = TrackingAPI.create_user("Missy", "Gala", "missy", "gala")
+                TrackingAPI.update_user(user_id, nothing, nothing, nothing, true)
+                project_id, project_upsert_result = TrackingAPI.create_project(
+                    user_id,
+                    "Test Project",
+                )
 
-            @test project_upsert_result isa TrackingAPI.Created
-            @test project_id isa Integer
+                @test project_upsert_result isa TrackingAPI.Created
+                @test project_id isa Integer
+            end
+
+            @testset verbose = true "with no user_id as argument" begin
+                project_id, project_upsert_result = TrackingAPI.create_project(
+                    "Test Project",
+                )
+
+                @test project_upsert_result isa TrackingAPI.Created
+                @test project_id isa Integer
+
+                default_user = TrackingAPI.get_user_by_username("default")
+
+                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
+                    default_user.id,
+                    project_id,
+                )
+                @test !(userpermission |> isnothing)
+            end
         end
 
         @testset verbose = true "get project by id" begin
@@ -29,7 +49,7 @@
             projects = TrackingAPI.get_projects()
 
             @test projects isa Array{TrackingAPI.Project,1}
-            @test (projects |> length) == 1
+            @test (projects |> length) == 2
             @test projects[1].id == 1
             @test projects[1].name == "Test Project"
         end
