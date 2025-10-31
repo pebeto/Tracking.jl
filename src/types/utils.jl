@@ -77,12 +77,13 @@ function type_from_dict(::Type{T}, data::Dict{K,Any})::T where {T,K}
     type_fields = T |> fieldnames
     values = map(type_fields) do field
         key = convert_field_to_key((data |> typeof |> KeyConversionTrait), field)
-        value = get(data, key, nothing)
-        if value === nothing
-            throw(KeyError(key))
-        end
+        value = haskey(data, key) ? data[key] : nothing
 
         field_type = fieldtype(T, field)
+
+        if value |> isnothing && Nothing <: field_type
+            return nothing
+        end
 
         if value isa field_type
             return value

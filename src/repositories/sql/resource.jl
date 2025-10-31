@@ -1,0 +1,37 @@
+const SQL_SELECT_RESOURCE_BY_ID = """
+    SELECT
+        r.id,
+        r.experiment_id,
+        r.name,
+        r.description,
+        r.data,
+        r.created_date,
+        r.updated_date
+    FROM resource r WHERE r.id = :id
+    """
+
+const SQL_SELECT_RESOURCES_BY_EXPERIMENT_ID = """
+    SELECT
+        r.id,
+        r.experiment_id,
+        r.name,
+        r.description,
+        r.created_date,
+        r.updated_date
+    FROM resource r WHERE r.experiment_id = :id
+    """
+
+const SQL_INSERT_RESOURCE = """
+    INSERT INTO resource (experiment_id, name, data, created_date)
+        VALUES (:experiment_id, :name, :data, :created_date) RETURNING id
+    """
+
+const SQL_UPDATE_RESOURCE = """
+    UPDATE resource SET {fields}
+    WHERE id = :id
+    """
+
+const SQL_DELETE_RESOURCE = """
+    DELETE FROM resource
+    WHERE id = :id
+    """

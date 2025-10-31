@@ -14,13 +14,13 @@ end
 function insert(
     ::Type{<:Parameter}, iteration_id::Integer, key::AbstractString, value::AbstractString
 )::Tuple{Optional{<:Int64},UpsertResult}
-    parameters = (
+    fields = (
         iteration_id=iteration_id,
         key=key,
         value=value,
         created_date=(now() |> string),
     )
-    return insert(SQL_INSERT_PARAMETER, parameters)
+    return insert(SQL_INSERT_PARAMETER, fields)
 end
 
 function update(

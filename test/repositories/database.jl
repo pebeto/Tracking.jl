@@ -30,6 +30,7 @@
                 ["iteration"],
                 ["parameter"],
                 ["metric"],
+                ["resource"],
                 ["sqlite_sequence"],
             ]
             @test values(row) in table_names

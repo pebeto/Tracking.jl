@@ -103,6 +103,19 @@ const SQL_CREATE_METRIC = """
     )
     """
 
+const SQL_CREATE_RESOURCE = """
+    CREATE TABLE IF NOT EXISTS resource (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        experiment_id INTEGER NOT NULL,
+        name TEXT NOT NULL CHECK (name <> ''),
+        description TEXT DEFAULT '',
+        data BLOB NOT NULL,
+        created_date TEXT NOT NULL CHECK (created_date <> ''),
+        updated_date TEXT DEFAULT '',
+        FOREIGN KEY(experiment_id) REFERENCES experiment(id)
+    )
+    """
+
 const SQL_CREATE_TAG = """
     CREATE TABLE IF NOT EXISTS tag (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

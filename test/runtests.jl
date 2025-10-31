@@ -71,6 +71,7 @@ include("repositories/experiment.jl")
 include("repositories/iteration.jl")
 include("repositories/parameter.jl")
 include("repositories/metric.jl")
+include("repositories/resource.jl")
 include("repositories/utils.jl")
 
 include("services/user.jl")

@@ -14,13 +14,13 @@ end
 function insert(
     ::Type{<:Experiment}, project_id::Integer, status_id::Integer, name::AbstractString
 )::Tuple{Optional{<:Int64},UpsertResult}
-    parameters = (
+    fields = (
         project_id=project_id,
         status_id=status_id,
         name=name,
         created_date=(now() |> string),
     )
-    return insert(SQL_INSERT_EXPERIMENT, parameters)
+    return insert(SQL_INSERT_EXPERIMENT, fields)
 end
 
 function update(

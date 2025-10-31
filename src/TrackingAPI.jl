@@ -22,6 +22,7 @@ include("types/experiment.jl")
 include("types/iteration.jl")
 include("types/parameter.jl")
 include("types/metric.jl")
+include("types/resource.jl")
 
 include("repositories/sql/database.jl")
 include("repositories/sql/user.jl")
@@ -31,6 +32,7 @@ include("repositories/sql/experiment.jl")
 include("repositories/sql/iteration.jl")
 include("repositories/sql/parameter.jl")
 include("repositories/sql/metric.jl")
+include("repositories/sql/resource.jl")
 
 include("repositories/utils.jl")
 include("repositories/database.jl")
@@ -41,6 +43,7 @@ include("repositories/experiment.jl")
 include("repositories/iteration.jl")
 include("repositories/parameter.jl")
 include("repositories/metric.jl")
+include("repositories/resource.jl")
 
 include("services/utils.jl")
 include("services/user.jl")
@@ -75,7 +78,7 @@ function AuthMiddleware(handler)
 
                 token = split(auth_header, " ")[2] |> string
                 jwt = JWT(; jwt=token)
-                key = JWKSymmetric(JWTs.MD_SHA256, api_config.jwt_secret |> Vector{UInt8})
+                key = JWKSymmetric(JWTs.MD_SHA256, api_config.jwt_secret |> Array{UInt8,1})
                 validate!(jwt, key)
 
                 if jwt |> isvalid

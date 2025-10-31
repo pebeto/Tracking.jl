@@ -14,11 +14,11 @@ end
 function insert(
     ::Type{<:Iteration}, experiment_id::Integer
 )::Tuple{Optional{<:Int64},UpsertResult}
-    parameters = (
+    fields = (
         experiment_id=experiment_id,
         created_date=(now() |> string),
     )
-    return insert(SQL_INSERT_ITERATION, parameters)
+    return insert(SQL_INSERT_ITERATION, fields)
 end
 
 function update(

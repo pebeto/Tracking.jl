@@ -14,13 +14,13 @@ end
 function insert(
     ::Type{<:Metric}, iteration_id::Integer, key::AbstractString, value::AbstractFloat
 )::Tuple{Optional{<:Int64},UpsertResult}
-    metrics = (
+    fields = (
         iteration_id=iteration_id,
         key=key,
         value=value,
         created_date=(now() |> string),
     )
-    return insert(SQL_INSERT_METRIC, metrics)
+    return insert(SQL_INSERT_METRIC, fields)
 end
 
 function update(
