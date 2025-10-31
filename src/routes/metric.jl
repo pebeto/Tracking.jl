@@ -10,7 +10,7 @@ function setup_metric_routes()
     root = router("/metric", tags=["metric"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_metric = id |> get_metric_by_id
+        response_metric = id |> get_metric
 
         if (response_metric |> isnothing)
             return json(

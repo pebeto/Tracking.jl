@@ -10,7 +10,7 @@ function setup_auth_routes()
     root = router("/auth", tags=["auth"])
 
     @post root("/") function (::HTTP.Request, parameters::Json{UserLoginPayload})
-        user = parameters.payload.username |> get_user_by_username
+        user = parameters.payload.username |> get_user
 
         if user |> isnothing
             return json(("message" => "User not found"); status=HTTP.StatusCodes.NOT_FOUND)

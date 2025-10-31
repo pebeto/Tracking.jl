@@ -2,7 +2,7 @@
     @testset verbose = true "resource service" begin
         @testset verbose = true "create resource" begin
             @testset "with existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -34,7 +34,7 @@
 
         @testset verbose = true "get resource by id" begin
             @testset "existing resource" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -48,7 +48,7 @@
                     resource_data,
                 )
 
-                resource = TrackingAPI.get_resource_by_id(resource_id)
+                resource = resource_id |> TrackingAPI.get_resource
 
                 @test resource isa TrackingAPI.Resource
                 @test resource.id == resource_id
@@ -58,14 +58,14 @@
             end
 
             @testset "non-existing resource" begin
-                resource = TrackingAPI.get_resource_by_id(9999)
+                resource = TrackingAPI.get_resource(9999)
 
                 @test resource |> isnothing
             end
         end
 
         @testset verbose = true "get resources" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -90,7 +90,7 @@
         end
 
         @testset verbose = true "update resource" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -103,7 +103,7 @@
                 UInt8[0x0A, 0x0B, 0x0C],
             )
 
-            resource = TrackingAPI.get_resource_by_id(resource_id)
+            resource = resource_id |> TrackingAPI.get_resource
 
             update_result = TrackingAPI.update_resource(
                 resource_id,
@@ -113,7 +113,7 @@
             )
             @test update_result isa TrackingAPI.Updated
 
-            updated_resource = TrackingAPI.get_resource_by_id(resource_id)
+            updated_resource = resource_id |> TrackingAPI.get_resource
 
             @test updated_resource.id == resource_id
             @test updated_resource.name == "Updated Resource"
@@ -122,7 +122,7 @@
         end
 
         @testset verbose = true "delete resource" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -135,8 +135,8 @@
                 UInt8[0x0A, 0x0B, 0x0C],
             )
 
-            @test TrackingAPI.delete_resource(resource_id)
-            @test TrackingAPI.get_resource_by_id(resource_id) |> isnothing
+            @test resource_id |> TrackingAPI.delete_resource
+            @test (resource_id |> TrackingAPI.get_resource) |> isnothing
         end
     end
 end

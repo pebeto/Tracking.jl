@@ -10,7 +10,7 @@ function setup_iteration_routes()
     root = router("/iteration", tags=["iteration"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_iteration = id |> get_iteration_by_id
+        response_iteration = id |> get_iteration
 
         if (response_iteration |> isnothing)
             return json(

@@ -2,7 +2,7 @@
     @testset verbose = true "parameter repository" begin
         @testset verbose = true "insert" begin
             @testset "with existing iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -31,7 +31,7 @@
 
         @testset verbose = true "fetch" begin
             @testset "existing parameter" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -63,7 +63,7 @@
         end
 
         @testset verbose = true "fetch all" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -90,7 +90,7 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -119,7 +119,7 @@
 
         @testset verbose = true "delete" begin
             @testset "single parameter" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -139,7 +139,7 @@
             end
 
             @testset "all parameters by iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -147,7 +147,7 @@
                     "Parameter Test Experiment",
                 )
                 iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
-                iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+                iteration = iteration_id |> TrackingAPI.get_iteration
                 TrackingAPI.insert(
                     TrackingAPI.Parameter,
                     iteration_id,

@@ -1,5 +1,5 @@
 """
-    get_parameter_by_id(id::Integer)::Optional{Parameter}
+    get_parameter(id::Integer)::Optional{Parameter}
 
 Get a [`Parameter`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Parameter`](@ref) by id.
 # Returns
 A [`Parameter`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_parameter_by_id(id::Integer)::Optional{Parameter} = fetch(Parameter, id)
+get_parameter(id::Integer)::Optional{Parameter} = fetch(Parameter, id)
 
 """
     get_parameters(iteration_id::Integer)::Array{Parameter, 1}
@@ -40,7 +40,7 @@ An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully crea
 function create_parameter(
     iteration_id::Integer, key::AbstractString, value::AbstractString
 )::Tuple{Optional{<:Int64},UpsertResult}
-    iteration = iteration_id |> get_iteration_by_id
+    iteration = iteration_id |> get_iteration
     if iteration |> isnothing
         return nothing, Unprocessable()
     end
@@ -73,7 +73,7 @@ An [`UpsertResult`](@ref). [`Updated`](@ref) if the record was successfully upda
 function update_parameter(
     id::Integer, key::Optional{AbstractString}, value::Optional{AbstractString}
 )::UpsertResult
-    parameter = id |> get_parameter_by_id
+    parameter = id |> get_parameter
     if parameter |> isnothing
         return Unprocessable()
     end

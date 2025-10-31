@@ -1,5 +1,5 @@
 """
-    get_resource_by_id(id::Integer)::Optional{Resource}
+    get_resource(id::Integer)::Optional{Resource}
 
 Get a [`Resource`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Resource`](@ref) by id.
 # Returns
 A [`Resource`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_resource_by_id(id::Integer)::Optional{Resource} = fetch(Resource, id)
+get_resource(id::Integer)::Optional{Resource} = fetch(Resource, id)
 
 """
     get_resources(experiment_id::Integer)::Array{Resource, 1}
@@ -40,7 +40,7 @@ An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully crea
 function create_resource(
     experiment_id::Integer, name::AbstractString, data::AbstractArray{UInt8,1}
 )::Tuple{Optional{<:Int64},UpsertResult}
-    experiment = experiment_id |> get_experiment_by_id
+    experiment = experiment_id |> get_experiment
     if experiment |> isnothing
         return nothing, Unprocessable()
     end
@@ -72,7 +72,7 @@ function update_resource(
     description::Optional{AbstractString},
     data::Optional{AbstractArray{UInt8,1}},
 )::UpsertResult
-    resource = id |> get_resource_by_id
+    resource = id |> get_resource
     if resource |> isnothing
         return Unprocessable()
     end

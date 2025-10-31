@@ -1,5 +1,5 @@
 """
-    get_project_by_id(id::Integer)::Optional{Project}
+    get_project(id::Integer)::Optional{Project}
 
 Get a [`Project`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Project`](@ref) by id.
 # Returns
 A [`Project`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_project_by_id(id::Integer)::Optional{Project} = fetch(Project, id)
+get_project(id::Integer)::Optional{Project} = fetch(Project, id)
 
 """
     get_projects()::Array{Project, 1}
@@ -36,7 +36,7 @@ An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully crea
 function create_project(
     user_id::Integer, name::AbstractString
 )::Tuple{Optional{<:Int64},UpsertResult}
-    user = user_id |> get_user_by_id
+    user = user_id |> get_user
     if user |> isnothing || user.is_admin == 0
         return nothing, Unprocessable()
     end
@@ -66,7 +66,7 @@ Create a [`Project`](@ref). Uses the "default" user to create the project.
 An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully created, [`Duplicate`](@ref) if the record already exists, [`Unprocessable`](@ref) if the record violates a constraint, and [`Error`](@ref) if an error occurred while creating the record.
 """
 function create_project(name::AbstractString)::Tuple{Optional{<:Int64},UpsertResult}
-    default_user = get_user_by_username("default")
+    default_user = get_user("default")
     return create_project(default_user.id, name)
 end
 

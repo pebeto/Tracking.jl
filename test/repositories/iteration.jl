@@ -2,7 +2,7 @@
     @testset verbose = true " iteration repository" begin
         @testset verbose = true "insert" begin
             @testset "with existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.insert(
                     TrackingAPI.Experiment,
@@ -27,7 +27,7 @@
 
         @testset verbose = true "fetch" begin
             @testset "existing iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.insert(
                     TrackingAPI.Experiment,
@@ -53,7 +53,7 @@
         end
 
         @testset verbose = true "fetch all" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.insert(
                 TrackingAPI.Experiment,
@@ -71,7 +71,7 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.insert(
                 TrackingAPI.Experiment,
@@ -95,7 +95,7 @@
         end
 
         @testset verbose = true "delete" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.insert(
                 TrackingAPI.Experiment,

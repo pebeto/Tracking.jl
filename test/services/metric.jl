@@ -2,7 +2,7 @@
     @testset verbose = true "metric service" begin
         @testset verbose = true "create metric" begin
             @testset "with existing iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -35,21 +35,21 @@
 
         @testset verbose = true "get metric by id" begin
             @testset "existing metric" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
                     TrackingAPI.IN_PROGRESS,
                     "Test experiment",
                 )
-                iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
+                iteration_id, _ = experiment_id |> TrackingAPI.create_iteration
                 metric_id, _ = TrackingAPI.create_metric(
                     iteration_id,
                     "accuracy",
                     0.95,
                 )
 
-                metric = TrackingAPI.get_metric_by_id(metric_id)
+                metric = metric_id |> TrackingAPI.get_metric
 
                 @test metric isa TrackingAPI.Metric
                 @test metric.id == metric_id
@@ -59,14 +59,14 @@
             end
 
             @testset "non-existing metric" begin
-                metric = TrackingAPI.get_metric_by_id(9999)
+                metric = TrackingAPI.get_metric(9999)
 
                 @test metric |> isnothing
             end
         end
 
         @testset verbose = true "get metrics" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -92,21 +92,21 @@
         end
 
         @testset verbose = true "update metric" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
                 TrackingAPI.IN_PROGRESS,
                 "Test experiment",
             )
-            iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
+            iteration_id, _ = experiment_id |> TrackingAPI.create_iteration
             metric_id, _ = TrackingAPI.create_metric(
                 iteration_id,
                 "accuracy",
                 0.95,
             )
 
-            metric = TrackingAPI.get_metric_by_id(metric_id)
+            metric = metric_id |> TrackingAPI.get_metric
 
             update_result = TrackingAPI.update_metric(
                 metric_id,
@@ -115,7 +115,7 @@
             )
             @test update_result isa TrackingAPI.Updated
 
-            updated_metric = TrackingAPI.get_metric_by_id(metric_id)
+            updated_metric = metric_id |> TrackingAPI.get_metric
 
             @test updated_metric.id == metric_id
             @test updated_metric.key == "accuracy"
@@ -124,7 +124,7 @@
 
         @testset verbose = true "delete metric" begin
             @testset "single metric" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -138,12 +138,12 @@
                     0.95,
                 )
 
-                @test TrackingAPI.delete_metric(metric_id)
-                @test TrackingAPI.get_metric_by_id(metric_id) |> isnothing
+                @test metric_id |> TrackingAPI.delete_metric
+                @test (metric_id |> TrackingAPI.get_metric) |> isnothing
             end
 
             @testset "all metrics by iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -161,7 +161,7 @@
                     "loss",
                     0.05,
                 )
-                iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+                iteration = iteration_id |> TrackingAPI.get_iteration
 
                 @test TrackingAPI.delete_metrics(iteration)
                 @test TrackingAPI.get_metrics(iteration_id) |> isempty

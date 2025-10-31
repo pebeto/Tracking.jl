@@ -10,7 +10,7 @@ function setup_experiment_routes()
     root = router("/experiment", tags=["experiment"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_experiment = id |> get_experiment_by_id
+        response_experiment = id |> get_experiment
 
         if (response_experiment |> isnothing)
             return json(

@@ -52,7 +52,7 @@ macro admin_required(function_definition)
             end
         else
             @warn "Authentication is disabled. Handlers will be injected with the default admin user."
-            user = get_user_by_id(1)
+            user = get_user("default")
         end
         $(function_body)
     end

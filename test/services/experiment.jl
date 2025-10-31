@@ -2,7 +2,7 @@
     @testset verbose = true "experiment service" begin
         @testset verbose = true "create experiment" begin
             @testset "with existing project" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
 
                 experiment_id, result = TrackingAPI.create_experiment(
@@ -28,7 +28,7 @@
         end
         @testset verbose = true "get experiment by id" begin
             @testset "existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -36,7 +36,7 @@
                     "Service Test Experiment",
                 )
 
-                experiment = TrackingAPI.get_experiment_by_id(experiment_id)
+                experiment = experiment_id |> TrackingAPI.get_experiment
 
                 @test experiment isa TrackingAPI.Experiment
                 @test experiment.id == experiment_id
@@ -46,14 +46,14 @@
             end
 
             @testset "non-existing experiment" begin
-                experiment = TrackingAPI.get_experiment_by_id(9999)
+                experiment = TrackingAPI.get_experiment(9999)
 
                 @test experiment |> isnothing
             end
         end
 
         @testset verbose = true "get experiments" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id1, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -73,7 +73,7 @@
         end
 
         @testset verbose = true "update experiment" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -90,7 +90,7 @@
             )
             @test update_result isa TrackingAPI.Updated
 
-            experiment = TrackingAPI.get_experiment_by_id(experiment_id)
+            experiment = experiment_id |> TrackingAPI.get_experiment
 
             @test experiment isa TrackingAPI.Experiment
             @test experiment.status_id == TrackingAPI.FINISHED |> Integer
@@ -100,7 +100,7 @@
         end
 
         @testset verbose = true "delete experiment" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -108,7 +108,7 @@
                 "Service Test Experiment",
             )
             @test TrackingAPI.delete_experiment(experiment_id)
-            @test TrackingAPI.get_experiment_by_id(experiment_id) |> isnothing
+            @test (experiment_id |> TrackingAPI.get_experiment) |> isnothing
         end
     end
 end

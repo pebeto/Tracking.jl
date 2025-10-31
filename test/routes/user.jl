@@ -12,7 +12,7 @@
                 body=payload,
                 status_exception=false,
             )
-            username_user = TrackingAPI.get_user_by_username("missy")
+            username_user = TrackingAPI.get_user("missy")
 
             @test response.status == HTTP.StatusCodes.CREATED
             data = JSON.parse(response.body |> String, Dict{String,Any})
@@ -20,7 +20,7 @@
         end
 
         @testset verbose = true "get user by id" begin
-            username_user = TrackingAPI.get_user_by_username("missy")
+            username_user = TrackingAPI.get_user("missy")
             response = HTTP.get(
                 "http://127.0.0.1:9000/user/$(username_user.id)";
                 status_exception=false,
@@ -57,7 +57,7 @@
         end
 
         @testset verbose = true "update user" begin
-            username_user = TrackingAPI.get_user_by_username("missy")
+            username_user = TrackingAPI.get_user("missy")
             payload = Dict(
                 "first_name" => "Ana",
                 "last_name" => nothing,
@@ -85,7 +85,7 @@
         end
 
         @testset verbose = true "delete user" begin
-            username_user = TrackingAPI.get_user_by_username("missy")
+            username_user = TrackingAPI.get_user("missy")
             response = HTTP.delete(
                 "http://127.0.0.1:9000/user/$(username_user.id)";
                 status_exception=false,

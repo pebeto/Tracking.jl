@@ -12,10 +12,7 @@ function setup_userpermission_routes()
     @get root("/user/{user_id}/project/{project_id}") @admin_required function (
         request::HTTP.Request, user_id::Integer, project_id::Integer
     )
-        response_userpermission = get_userpermission_by_user_and_project(
-            user_id,
-            project_id,
-        )
+        response_userpermission = get_userpermission(user_id, project_id)
 
         if (response_userpermission |> isnothing)
             return json(

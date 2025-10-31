@@ -1,5 +1,5 @@
 """
-    get_userpermission_by_user_and_project(user_id::Integer, project_id::Integer)::Optional{UserPermission}
+    get_userpermission(user_id::Integer, project_id::Integer)::Optional{UserPermission}
 
 Get a [`UserPermission`](@ref) by [`User`](@ref) id and [`Project`](@ref) IDs.
 
@@ -10,7 +10,7 @@ Get a [`UserPermission`](@ref) by [`User`](@ref) id and [`Project`](@ref) IDs.
 # Returns
 A [`UserPermission`](@ref) object. If the record does not exist, return `nothing`.
 """
-function get_userpermission_by_user_and_project(
+function get_userpermission(
     user_id::Integer, project_id::Integer
 )::Optional{UserPermission}
     return fetch(UserPermission, user_id, project_id)
@@ -40,12 +40,12 @@ function create_userpermission(
     update_permission::Bool,
     delete_permission::Bool,
 )::Tuple{Optional{<:Int64},UpsertResult}
-    user = user_id |> get_user_by_id
+    user = user_id |> get_user
     if user |> isnothing
         return nothing, Unprocessable()
     end
 
-    project = project_id |> get_project_by_id
+    project = project_id |> get_project
     if project |> isnothing
         return nothing, Unprocessable()
     end

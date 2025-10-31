@@ -1,5 +1,5 @@
 """
-    get_iteration_by_id(id::Integer)::Optional{Iteration}
+    get_iteration(id::Integer)::Optional{Iteration}
 
 Get a [`Iteration`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Iteration`](@ref) by id.
 # Returns
 A [`Iteration`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_iteration_by_id(id::Integer)::Optional{Iteration} = fetch(Iteration, id)
+get_iteration(id::Integer)::Optional{Iteration} = fetch(Iteration, id)
 
 """
     get_iterations(experiment_id::Integer)::Array{Iteration, 1}
@@ -36,7 +36,7 @@ end
 An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully created, [`Duplicate`](@ref) if the record already exists, [`Unprocessable`](@ref) if the record violates a constraint, and [`Error`](@ref) if an error occurred while creating the record.
 """
 function create_iteration(experiment_id::Integer)::Tuple{Optional{<:Int64},UpsertResult}
-    experiment = experiment_id |> get_experiment_by_id
+    experiment = experiment_id |> get_experiment
     if experiment |> isnothing
         return nothing, Unprocessable()
     end
@@ -64,7 +64,7 @@ An [`UpsertResult`](@ref). [`Updated`](@ref) if the record was successfully upda
 function update_iteration(
     id::Integer, notes::Optional{AbstractString}, end_date::Optional{DateTime}
 )::UpsertResult
-    iteration = id |> get_iteration_by_id
+    iteration = id |> get_iteration
     if iteration |> isnothing
         return Unprocessable()
     end
@@ -83,9 +83,17 @@ end
 Delete a [`Iteration`](@ref) record.
 
 # Arguments
-- `id::Integer`: The id of the iteration to delete.
+- `id::Integer`: The id of the iteration to delete. Also deletes all associated [`Parameter`](@ref) and [`Metric`](@ref) records.
 
 # Returns
 `true` if the record was successfully deleted, `false` otherwise.
 """
-delete_iteration(id::Integer)::Bool = delete(Iteration, id)
+function delete_iteration(id::Integer)::Bool
+    iteration = fetch(Iteration, id)
+
+    println("missy")
+    println(delete_parameters(iteration))
+    println(delete_metrics(iteration))
+    println("gala")
+    return delete(Iteration, id)
+end

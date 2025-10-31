@@ -10,7 +10,7 @@ function setup_resource_routes()
     root = router("/resource", tags=["resource"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_resource = id |> get_resource_by_id
+        response_resource = id |> get_resource
 
         if (response_resource |> isnothing)
             return json(

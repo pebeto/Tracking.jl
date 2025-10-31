@@ -10,7 +10,7 @@ function setup_parameter_routes()
     root = router("/parameter", tags=["parameter"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_parameter = id |> get_parameter_by_id
+        response_parameter = id |> get_parameter
 
         if (response_parameter |> isnothing)
             return json(

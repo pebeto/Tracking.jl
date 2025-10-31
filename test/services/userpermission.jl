@@ -1,7 +1,7 @@
 @with_trackingapi_test_db begin
     @testset verbose = true "userpermission service" begin
         @testset verbose = true "create" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
 
             @testset "create with no existing user" begin
@@ -56,11 +56,11 @@
         end
 
         @testset verbose = true "get by user id and project id" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
 
             @testset "get with existing user and project" begin
-                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
+                userpermission = TrackingAPI.get_userpermission(
                     user.id,
                     project_id,
                 )
@@ -71,7 +71,7 @@
             end
 
             @testset "get with non-existing user" begin
-                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
+                userpermission = TrackingAPI.get_userpermission(
                     9999,
                     project_id,
                 )
@@ -80,32 +80,23 @@
             end
 
             @testset "get with non-existing project" begin
-                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                    user.id,
-                    9999,
-                )
+                userpermission = TrackingAPI.get_userpermission(user.id, 9999)
 
                 @test userpermission |> isnothing
             end
 
             @testset "get with non-existing user and project" begin
-                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                    9999,
-                    9999,
-                )
+                userpermission = TrackingAPI.get_userpermission(9999, 9999)
 
                 @test userpermission |> isnothing
             end
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
 
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                user.id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(user.id, project_id)
             @test userpermission.create_permission == false
             @test userpermission.read_permission == true
             @test userpermission.update_permission == false
@@ -118,10 +109,7 @@
                 nothing,
                 nothing,
             ) isa TrackingAPI.Updated
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                user.id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(user.id, project_id)
             @test userpermission.create_permission == true
             @test userpermission.read_permission == true
             @test userpermission.update_permission == false
@@ -129,18 +117,12 @@
         end
 
         @testset verbose = true "delete" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                user.id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(user.id, project_id)
 
             @test TrackingAPI.delete_userpermission(userpermission.id)
-            @test TrackingAPI.get_userpermission_by_user_and_project(
-                user.id,
-                project_id,
-            ) |> isnothing
+            @test TrackingAPI.get_userpermission(user.id, project_id) |> isnothing
         end
     end
 end

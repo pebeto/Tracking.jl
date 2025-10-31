@@ -66,6 +66,15 @@ include("routes/metric.jl")
 include("routes/resource.jl")
 include("routes/auth.jl")
 
+export get_user, get_users, create_user, update_user, delete_user
+export get_project, get_projects, create_project, update_project, delete_project
+export get_userpermission, create_userpermission, update_userpermission, delete_userpermission
+export get_experiment, get_experiments, create_experiment, update_experiment, delete_experiment
+export get_iteration, get_iterations, create_iteration, update_iteration, delete_iteration
+export get_parameter, get_parameters, create_parameter, update_parameter, delete_parameter
+export get_metric, get_metrics, create_metric, update_metric, delete_metric
+export get_resource, get_resources, create_resource, update_resource, delete_resource
+
 function AuthMiddleware(handler)
     return function (request::HTTP.Request)
         if api_config.enable_auth
@@ -109,7 +118,7 @@ function AuthMiddleware(handler)
                         throw(ArgumentError("Invalid token payload"))
                     end
 
-                    user = get_user_by_id(user_id)
+                    user = get_user(user_id)
                     if user |> isnothing
                         throw(ArgumentError("User not found"))
                     end

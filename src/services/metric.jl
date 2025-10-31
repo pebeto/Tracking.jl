@@ -1,5 +1,5 @@
 """
-    get_metric_by_id(id::Integer)::Optional{Metric}
+    get_metric(id::Integer)::Optional{Metric}
 
 Get a [`Metric`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Metric`](@ref) by id.
 # Returns
 A [`Metric`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_metric_by_id(id::Integer)::Optional{Metric} = fetch(Metric, id)
+get_metric(id::Integer)::Optional{Metric} = fetch(Metric, id)
 
 """
     get_metrics(iteration_id::Integer)::Array{Metric, 1}
@@ -38,7 +38,7 @@ An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully crea
 function create_metric(
     iteration_id::Integer, key::AbstractString, value::AbstractFloat
 )::Tuple{Optional{<:Int64},UpsertResult}
-    iteration = iteration_id |> get_iteration_by_id
+    iteration = iteration_id |> get_iteration
     if iteration |> isnothing
         return nothing, Unprocessable()
     end
@@ -66,7 +66,7 @@ An [`UpsertResult`](@ref). [`Updated`](@ref) if the record was successfully upda
 function update_metric(
     id::Integer, key::Optional{AbstractString}, value::Optional{AbstractFloat}
 )::UpsertResult
-    metric = id |> get_metric_by_id
+    metric = id |> get_metric
     if metric |> isnothing
         return Unprocessable()
     end

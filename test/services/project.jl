@@ -21,9 +21,9 @@
                 @test project_upsert_result isa TrackingAPI.Created
                 @test project_id isa Integer
 
-                default_user = TrackingAPI.get_user_by_username("default")
+                default_user = TrackingAPI.get_user("default")
 
-                userpermission = TrackingAPI.get_userpermission_by_user_and_project(
+                userpermission = TrackingAPI.get_userpermission(
                     default_user.id,
                     project_id,
                 )
@@ -33,14 +33,14 @@
 
         @testset verbose = true "get project by id" begin
             @testset verbose = true "get project by existing id" begin
-                project = TrackingAPI.get_project_by_id(1)
+                project = TrackingAPI.get_project(1)
                 @test project isa TrackingAPI.Project
                 @test project.id == 1
                 @test project.name == "Test Project"
             end
 
             @testset verbose = true "get project by non-existing id" begin
-                project = TrackingAPI.get_project_by_id(9999)
+                project = TrackingAPI.get_project(9999)
                 @test project |> isnothing
             end
         end
@@ -61,18 +61,18 @@
                 "Updated Description"
             ) isa TrackingAPI.Updated
 
-            project = TrackingAPI.get_project_by_id(1)
+            project = TrackingAPI.get_project(1)
 
             @test project.name == "Updated Test Project"
             @test project.description == "Updated Description"
         end
 
         @testset verbose = true "delete project" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Project to Delete")
 
             @test TrackingAPI.delete_project(project_id)
-            @test TrackingAPI.get_project_by_id(project_id) |> isnothing
+            @test TrackingAPI.get_project(project_id) |> isnothing
         end
     end
 end

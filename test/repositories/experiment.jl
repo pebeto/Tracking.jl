@@ -2,7 +2,7 @@
     @testset verbose = true "experiment repository" begin
         @testset verbose = true "insert" begin
             @testset "with existing project" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
 
                 @test TrackingAPI.insert(
@@ -23,7 +23,7 @@
             end
 
             @testset "with non-allowed status" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
 
                 @test TrackingAPI.insert(
@@ -37,7 +37,7 @@
 
         @testset verbose = true "fetch" begin
             @testset "existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
                 experiment_id, _ = TrackingAPI.insert(
                     TrackingAPI.Experiment,
@@ -64,7 +64,7 @@
         end
 
         @testset verbose = true "fetch all" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
             TrackingAPI.insert(
                 TrackingAPI.Experiment,
@@ -86,7 +86,7 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
             experiment_id, _ = TrackingAPI.insert(
                 TrackingAPI.Experiment,
@@ -113,7 +113,7 @@
         end
 
         @testset verbose = true "delete" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Experiment Project")
             experiment_id, _ = TrackingAPI.insert(
                 TrackingAPI.Experiment,

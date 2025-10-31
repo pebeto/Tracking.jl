@@ -12,7 +12,7 @@ function setup_user_routes()
     @get root("/{id}") @same_user_or_admin_required function (
         request::HTTP.Request, id::Integer
     )
-        response_user = id |> get_user_by_id
+        response_user = id |> get_user
 
         if (response_user |> isnothing)
             return json(

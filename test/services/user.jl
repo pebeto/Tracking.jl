@@ -12,9 +12,9 @@
             @test user_id isa Integer
         end
 
-        @testset verbose = true "get_user_by_username" begin
+        @testset verbose = true "get user by username" begin
             @testset "get user by existing username" begin
-                user = TrackingAPI.get_user_by_username("missy")
+                user = TrackingAPI.get_user("missy")
 
                 @test user isa TrackingAPI.User
                 @test user.id isa Int
@@ -27,7 +27,7 @@
         end
 
         @testset "get user by non-existing username" begin
-            @test TrackingAPI.get_user_by_username("gala") |> isnothing
+            @test TrackingAPI.get_user("gala") |> isnothing
         end
 
         @testset verbose = true "get_users" begin
@@ -47,7 +47,7 @@
                 nothing,
             ) isa TrackingAPI.Updated
 
-            user = TrackingAPI.get_user_by_username("missy")
+            user = TrackingAPI.get_user("missy")
 
             @test user.first_name == "Ana"
             @test user.last_name == "Gala"
@@ -56,7 +56,7 @@
         @testset verbose = true "delete user" begin
             @test TrackingAPI.delete_user(2)
 
-            @test TrackingAPI.get_user_by_username("missy") |> isnothing
+            @test TrackingAPI.get_user("missy") |> isnothing
         end
     end
 end

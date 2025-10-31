@@ -1,5 +1,5 @@
 """
-    get_user_by_username(username::AbstractString)::Optional{User}
+    get_user(username::AbstractString)::Optional{User}
 
 Get an [`User`](@ref) by username.
 
@@ -9,10 +9,10 @@ Get an [`User`](@ref) by username.
 # Returns
 An [`User`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_user_by_username(username::AbstractString)::Optional{User} = fetch(User, username)
+get_user(username::AbstractString)::Optional{User} = fetch(User, username)
 
 """
-    get_user_by_id(id::Integer)::Optional{User}
+    get_user(id::Integer)::Optional{User}
 
 Get an [`User`](@ref) by id.
 
@@ -22,7 +22,7 @@ Get an [`User`](@ref) by id.
 # Returns
 An [`User`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_user_by_id(id::Integer)::Optional{User} = fetch(User, id)
+get_user(id::Integer)::Optional{User} = fetch(User, id)
 
 """
     get_users()::Array{User, 1}
@@ -33,19 +33,6 @@ Get all [`User`](@ref).
 An array of [`User`](@ref) objects.
 """
 get_users()::Array{User,1} = User |> fetch_all
-
-"""
-    get_users_by_project_id(project_id::Integer)::Array{User, 1}
-
-Get all [`User`](@ref) associated with a specific project.
-
-# Arguments
-- `project_id::Integer`: The ID of the project.
-
-# Returns
-An array of [`User`](@ref) objects.
-"""
-get_users_by_project_id(project_id::Integer)::Array{User,1} = fetch_all(User, project_id)
 
 """
     create_user(first_name::AbstractString, last_name::AbstractString, username::AbstractString, password::AbstractString)::Tuple{Optional{<:Int64},UpsertResult}

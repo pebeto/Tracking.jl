@@ -1,7 +1,7 @@
 @with_trackingapi_test_db begin
     @testset verbose = true "userpermission routes" begin
         @testset verbose = true "create" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             new_user_id, _ = TrackingAPI.create_user("Choclo", "Dokie", "choclo", "dokie")
             payload = Dict(
@@ -17,10 +17,7 @@
                 status_exception=false,
             )
 
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                new_user_id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(new_user_id, project_id)
 
             @test response.status == HTTP.StatusCodes.CREATED
             data = JSON.parse(response.body |> String, Dict{String,Any})
@@ -28,7 +25,7 @@
         end
 
         @testset verbose = true "get by user id and project id" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             new_user_id, _ = TrackingAPI.create_user("Dokie", "Choclo", "dokie", "choclo")
             userpermission_id, _ = TrackingAPI.create_userpermission(
@@ -60,7 +57,7 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             new_user_id, _ = TrackingAPI.create_user("Ana", "Missy", "ana", "missy")
             userpermission_id, _ = TrackingAPI.create_userpermission(
@@ -89,10 +86,7 @@
             data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "UPDATED"
 
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                new_user_id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(new_user_id, project_id)
 
             @test userpermission.create_permission == true
             @test userpermission.read_permission == true
@@ -101,7 +95,7 @@
         end
 
         @testset verbose = true "delete" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             new_user_id, _ = TrackingAPI.create_user("Galinha", "Ana", "galinha", "ana")
             userpermission_id, _ = TrackingAPI.create_userpermission(
@@ -122,10 +116,7 @@
             data = JSON.parse(response.body |> String, Dict{String,Any})
             @test data["message"] == "OK"
 
-            userpermission = TrackingAPI.get_userpermission_by_user_and_project(
-                new_user_id,
-                project_id,
-            )
+            userpermission = TrackingAPI.get_userpermission(new_user_id, project_id)
 
             @test userpermission |> isnothing
         end

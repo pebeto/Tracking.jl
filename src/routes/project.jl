@@ -10,7 +10,7 @@ function setup_project_routes()
     root = router("/project", tags=["project"])
 
     @get root("/{id}") function (request::HTTP.Request, id::Integer)
-        response_project = id |> get_project_by_id
+        response_project = id |> get_project
 
         if (response_project |> isnothing)
             return json(

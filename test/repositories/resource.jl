@@ -2,7 +2,7 @@
     @testset verbose = true "resource repository" begin
         @testset verbose = true "insert" begin
             @testset "with existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -30,7 +30,7 @@
 
         @testset verbose = true "fetch" begin
             @testset "existing resource" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -64,7 +64,7 @@
         end
 
         @testset verbose = true "fetch all" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -92,7 +92,7 @@
         end
 
         @testset verbose = true "update" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -125,7 +125,7 @@
         end
 
         @testset verbose = true "delete" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,

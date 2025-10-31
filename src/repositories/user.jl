@@ -10,10 +10,6 @@ end
 
 fetch_all(::Type{<:User})::Array{User,1} = SQL_SELECT_USERS |> fetch_all .|> User
 
-function fetch_all(::Type{<:User}, project_id::Integer)::Array{User,1}
-    return fetch_all(SQL_SELECT_USERS_BY_PROJECT_ID, (id=project_id,)) .|> User
-end
-
 function insert(
     ::Type{<:User},
     first_name::AbstractString,

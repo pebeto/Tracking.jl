@@ -2,7 +2,7 @@
     @testset verbose = true "iteration service" begin
         @testset verbose = true "create iteration" begin
             @testset "with existing experiment" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -26,7 +26,7 @@
 
         @testset verbose = true "get iteration by id" begin
             @testset "existing iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -35,7 +35,7 @@
                 )
                 iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
 
-                iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+                iteration = iteration_id |> TrackingAPI.get_iteration
 
                 @test iteration isa TrackingAPI.Iteration
                 @test iteration.id == iteration_id
@@ -44,14 +44,14 @@
             end
 
             @testset "non-existing iteration" begin
-                iteration = TrackingAPI.get_iteration_by_id(9999)
+                iteration = TrackingAPI.get_iteration(9999)
 
                 @test iteration |> isnothing
             end
         end
 
         @testset verbose = true "get iterations" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -68,7 +68,7 @@
         end
 
         @testset verbose = true "update iteration" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -77,7 +77,7 @@
             )
             iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
 
-            iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+            iteration = iteration_id |> TrackingAPI.get_iteration
 
             @test iteration.notes |> isempty
             @test iteration.created_date isa DateTime
@@ -90,7 +90,7 @@
             )
             @test update_result isa TrackingAPI.Updated
 
-            updated_iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+            updated_iteration = iteration_id |> TrackingAPI.get_iteration
 
             @test updated_iteration.id == iteration_id
             @test updated_iteration.experiment_id == experiment_id
@@ -100,7 +100,7 @@
         end
 
         @testset verbose = true "delete iteration" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -110,7 +110,7 @@
             iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
 
             @test TrackingAPI.delete_iteration(iteration_id)
-            @test TrackingAPI.get_iteration_by_id(iteration_id) |> isnothing
+            @test (iteration_id |> TrackingAPI.get_iteration) |> isnothing
         end
     end
 end

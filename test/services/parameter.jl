@@ -2,7 +2,7 @@
     @testset verbose = true "parameter service" begin
         @testset verbose = true "create parameter" begin
             @testset "with existing iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -35,21 +35,21 @@
 
         @testset verbose = true "get parameter by id" begin
             @testset "existing parameter" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
                     TrackingAPI.IN_PROGRESS,
                     "Test experiment",
                 )
-                iteration_id, _ = TrackingAPI.create_iteration(experiment_id)
+                iteration_id, _ = experiment_id |> TrackingAPI.create_iteration
                 parameter_id, _ = TrackingAPI.create_parameter(
                     iteration_id,
                     "learning_rate",
                     "0.01",
                 )
 
-                parameter = TrackingAPI.get_parameter_by_id(parameter_id)
+                parameter = parameter_id |> TrackingAPI.get_parameter
 
                 @test parameter isa TrackingAPI.Parameter
                 @test parameter.id == parameter_id
@@ -59,14 +59,14 @@
             end
 
             @testset "non-existing parameter" begin
-                parameter = TrackingAPI.get_parameter_by_id(9999)
+                parameter = TrackingAPI.get_parameter(9999)
 
                 @test parameter |> isnothing
             end
         end
 
         @testset verbose = true "get parameters" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -92,7 +92,7 @@
         end
 
         @testset verbose = true "update parameter" begin
-            user = TrackingAPI.get_user_by_username("default")
+            user = TrackingAPI.get_user("default")
             project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
             experiment_id, _ = TrackingAPI.create_experiment(
                 project_id,
@@ -106,7 +106,7 @@
                 "0.01",
             )
 
-            parameter = TrackingAPI.get_parameter_by_id(parameter_id)
+            parameter = parameter_id |> TrackingAPI.get_parameter
 
             update_result = TrackingAPI.update_parameter(
                 parameter_id,
@@ -115,7 +115,7 @@
             )
             @test update_result isa TrackingAPI.Updated
 
-            updated_parameter = TrackingAPI.get_parameter_by_id(parameter_id)
+            updated_parameter = parameter_id |> TrackingAPI.get_parameter
 
             @test updated_parameter.id == parameter_id
             @test updated_parameter.key == "learning_rate"
@@ -124,7 +124,7 @@
 
         @testset verbose = true "delete parameter" begin
             @testset "single parameter" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -138,12 +138,12 @@
                     "0.01",
                 )
 
-                @test TrackingAPI.delete_parameter(parameter_id)
-                @test TrackingAPI.get_parameter_by_id(parameter_id) |> isnothing
+                @test parameter_id |> TrackingAPI.delete_parameter
+                @test parameter_id |> TrackingAPI.get_parameter |> isnothing
             end
 
             @testset "all parameters by iteration" begin
-                user = TrackingAPI.get_user_by_username("default")
+                user = TrackingAPI.get_user("default")
                 project_id, _ = TrackingAPI.create_project(user.id, "Test Project")
                 experiment_id, _ = TrackingAPI.create_experiment(
                     project_id,
@@ -161,7 +161,7 @@
                     "learning_rate",
                     0.001,
                 )
-                iteration = TrackingAPI.get_iteration_by_id(iteration_id)
+                iteration = iteration_id |> TrackingAPI.get_iteration
 
                 @test TrackingAPI.delete_parameters(iteration)
                 @test TrackingAPI.get_parameters(iteration_id) |> isempty

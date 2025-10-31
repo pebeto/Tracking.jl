@@ -1,5 +1,5 @@
 """
-    get_experiment_by_id(id::Integer)::Optional{Experiment}
+    get_experiment(id::Integer)::Optional{Experiment}
 
 Get a [`Experiment`](@ref) by id.
 
@@ -9,7 +9,7 @@ Get a [`Experiment`](@ref) by id.
 # Returns
 A [`Experiment`](@ref) object. If the record does not exist, return `nothing`.
 """
-get_experiment_by_id(id::Integer)::Optional{Experiment} = fetch(Experiment, id)
+get_experiment(id::Integer)::Optional{Experiment} = fetch(Experiment, id)
 
 """
     get_experiments(project_id::Integer)::Array{Experiment, 1}
@@ -42,7 +42,7 @@ An [`UpsertResult`](@ref). [`Created`](@ref) if the record was successfully crea
 function create_experiment(
     project_id::Integer, status_id::Integer, name::AbstractString
 )::Tuple{Optional{<:Int64},UpsertResult}
-    project = project_id |> get_project_by_id
+    project = project_id |> get_project
     if project |> isnothing
         return nothing, Unprocessable()
     end
@@ -137,7 +137,7 @@ end
 """
     delete_experiment(id::Integer)::Bool
 
-Delete a [`Experiment`](@ref) record. Also deletes all associated [`Iteration`](@ref).
+Delete a [`Experiment`](@ref) record. Also deletes all associated [`Iteration`](@ref) and [`Resource`](@ref) records.
 
 # Arguments
 - `id::Integer`: The id of the experiment to delete.
