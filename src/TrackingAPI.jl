@@ -53,6 +53,7 @@ include("services/experiment.jl")
 include("services/iteration.jl")
 include("services/parameter.jl")
 include("services/metric.jl")
+include("services/resource.jl")
 
 include("routes/utils.jl")
 include("routes/user.jl")
