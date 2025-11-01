@@ -1,38 +1,36 @@
 # Tracking.jl
+*A lightweight but **powerful** experiment tracking tool for Julia.*
+
 [![CI](https://github.com/pebeto/Tracking.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/pebeto/Tracking.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/github/pebeto/Tracking.jl/graph/badge.svg?token=Z01WPRJDNR)](https://codecov.io/github/pebeto/Tracking.jl)
 
-A full-featured solution for machine learning lifecycle (made in Julia) with a focus on tracking and reproducibility.
-
-> [!IMPORTANT]
-> This package is in an early development stage and is not yet ready for production use. The API may change significantly in the future.
-
-### Motivation
-After working with several machine learning lifecycle tools over the years, I found that most of them are bloated with features that just the 0.1% of users will ever use. I always loved the Unix philosophy of "do one thing and do it well"; that's the core motivation.
-Simple well defined projects mean smart design, easy to use, and easy to maintain. Well-architected projects are easy to extend and adapt to your needs. This is the goal of this package.
-
 ## Features
-- A complete solution for machine learning projects
-- Built-in REST API for integration with other tools
-- Support for asynchronous and distributed training
-- Portability thanks to SQLite
-- Built in Julia
+- A complete experiment tracking solution for Julia.
+- Built-in REST API server for remote logging and querying.
+- Portable and easy-to-use SQLite backend.
+- **Built in Julia**
 
-## FAQ
-### What's different from MLFlow?
-MLFlow is a great tool, and I recommend it. However, I found it to be bloated with features that I don't need. This is the same opinion I have about most of the tools in this space.
+Learn to use it with the [Tutorial](https://pebeto.github.io/Tracking.jl/dev/tutorial/).
 
-### Why Julia?
-I love  Julia; that's the main reason. This programming language, far from being fast, is highly interpretable and easy to use. You don't need to be a computer scientist to understand it, do you know that machine learning is also used by biologists, chemists, physicists, economists, and so on?
+## Installation
+You can install Tracking.jl via the Julia package manager:
+```julia
+using Pkg
+Pkg.add("Tracking")
+```
 
-### Julia is not popular, why you are using it?
-To make it popular.
+or from the REPL, type `]add Tracking`.
 
-### Why SQLite?
-Why not? SQLite is a great solution for storing data. It's fast, reliable, portable, and easy to use. Most of the time, you don't need a full-fledged database server, or an over-complicated cloud solution. Stop overengineering your projects, that's stupid.
+## Motivation
+Experiment tracking is a crucial aspect of machine learning and data science projects.
+It helps you keep track of your experiments, models, hyperparameters, and results.
+However, many existing experiment tracking tools are either too complex or not
+well-integrated with Julia. This package aims to fill that gap by providing a simple yet
+powerful solution specifically designed for Julia users.
 
-### Any UI in mind?
-Not yet. I want to focus on the API first. However, I have an idea in mind inspired by [Pluto.jl](https://github.com/fonsp/Pluto.jl).
-
-### How to contribute?
-Open an issue or a pull request. I will be happy to review it in my free time.
+## Contributing
+Contributions are welcome! If you find a bug or have a feature request, please open an
+issue on the [GitHub repository](https://github.com/pebeto/Tracking.jl). Pull requests
+are also encouraged. Please make sure to follow the existing
+[code style](https://github.com/JuliaDiff/BlueStyle) and include tests for any new
+features.
