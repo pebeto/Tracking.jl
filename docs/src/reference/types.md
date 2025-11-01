@@ -1,11 +1,11 @@
 # Types
 ```@docs
-TrackingAPI.User
-TrackingAPI.UserPermission
-TrackingAPI.Project
-TrackingAPI.Experiment
-TrackingAPI.Iteration
-TrackingAPI.Parameter
-TrackingAPI.Metric
-TrackingAPI.Resource
+Tracking.User
+Tracking.UserPermission
+Tracking.Project
+Tracking.Experiment
+Tracking.Iteration
+Tracking.Parameter
+Tracking.Metric
+Tracking.Resource
 ```

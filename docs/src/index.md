@@ -1,21 +1,21 @@
 ```@meta
-CurrentModule = TrackingAPI
+CurrentModule = Tracking
 ```
 
 ```@raw html
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 ```
 
-# TrackingAPI
+# Tracking
 *A lightweight but **powerful** experiment tracking tool for Julia.*
 
 ```@raw html
 <a class="github-button"
-  href="https://github.com/pebeto/TrackingAPI.jl"
+  href="https://github.com/pebeto/Tracking.jl"
   data-icon="octicon-star"
   data-size="large"
   data-show-count="true"
-  aria-label="Star pebeto/TrackingAPI.jl on GitHub">
+  aria-label="Star pebeto/Tracking.jl on GitHub">
   Star</a>
 ```
 
@@ -28,13 +28,13 @@ CurrentModule = TrackingAPI
 Learn to use it with the [Tutorial](@ref).
 
 ## Installation
-You can install TrackingAPI.jl via the Julia package manager:
+You can install Tracking.jl via the Julia package manager:
 ```julia
 using Pkg
-Pkg.add("TrackingAPI")
+Pkg.add("Tracking")
 ```
 
-or from the REPL, type `]add TrackingAPI`.
+or from the REPL, type `]add Tracking`.
 
 ## Motivation
 Experiment tracking is a crucial aspect of machine learning and data science projects.
@@ -45,7 +45,7 @@ powerful solution specifically designed for Julia users.
 
 ## Contributing
 Contributions are welcome! If you find a bug or have a feature request, please open an
-issue on the [GitHub repository](https://github.com/pebeto/TrackingAPI.jl). Pull requests
+issue on the [GitHub repository](https://github.com/pebeto/Tracking.jl). Pull requests
 are also encouraged. Please make sure to follow the existing
 [code style](https://github.com/JuliaDiff/BlueStyle) and include tests for any new
 features.

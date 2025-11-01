@@ -1,4 +1,4 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "iteration routes" begin
         @testset verbose = true "create iteration" begin
             project_payload = Dict("name" => "Iteration Project") |> JSON.json
@@ -11,7 +11,7 @@
             project_id = project_data["project_id"]
 
             experiment_payload = Dict(
-                "status_id" => (TrackingAPI.IN_PROGRESS |> Integer),
+                "status_id" => (Tracking.IN_PROGRESS |> Integer),
                 "name" => "Experiment for Iterations",
             ) |> JSON.json
             experiment_response = HTTP.post(
@@ -43,7 +43,7 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            iteration = data |> TrackingAPI.Iteration
+            iteration = data |> Tracking.Iteration
 
             @test iteration.id isa Int
             @test iteration.experiment_id == 1
@@ -64,9 +64,9 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
-            iterations = data .|> TrackingAPI.Iteration
+            iterations = data .|> Tracking.Iteration
 
-            @test iterations isa Array{TrackingAPI.Iteration,1}
+            @test iterations isa Array{Tracking.Iteration,1}
             @test (iterations |> length) == 2
         end
 
@@ -90,7 +90,7 @@
                 status_exception=false,
             )
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            iteration = data |> TrackingAPI.Iteration
+            iteration = data |> Tracking.Iteration
 
             @test iteration.notes == "Updated notes for iteration"
         end

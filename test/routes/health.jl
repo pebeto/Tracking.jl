@@ -10,6 +10,6 @@
     @test "package_version" in data_keys
     @test "server_time" in data_keys
 
-    @test data["app_name"] == "TrackingAPI"
-    @test (data["package_version"] |> VersionNumber) == (TrackingAPI |> pkgversion)
+    @test data["app_name"] == "Tracking"
+    @test (data["package_version"] |> VersionNumber) == (Tracking |> pkgversion)
 end

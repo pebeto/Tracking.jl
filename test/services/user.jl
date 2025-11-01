@@ -1,22 +1,22 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "user service" begin
         @testset verbose = true "create user" begin
-            user_id, user_upsert_result = TrackingAPI.create_user(
+            user_id, user_upsert_result = Tracking.create_user(
                 "Missy",
                 "Gala",
                 "missy",
                 "gala",
             )
 
-            @test user_upsert_result isa TrackingAPI.Created
+            @test user_upsert_result isa Tracking.Created
             @test user_id isa Integer
         end
 
         @testset verbose = true "get user by username" begin
             @testset "get user by existing username" begin
-                user = TrackingAPI.get_user("missy")
+                user = Tracking.get_user("missy")
 
-                @test user isa TrackingAPI.User
+                @test user isa Tracking.User
                 @test user.id isa Int
                 @test user.first_name == "Missy"
                 @test user.last_name == "Gala"
@@ -27,36 +27,36 @@
         end
 
         @testset "get user by non-existing username" begin
-            @test TrackingAPI.get_user("gala") |> isnothing
+            @test Tracking.get_user("gala") |> isnothing
         end
 
         @testset verbose = true "get_users" begin
-            TrackingAPI.create_user("Gala", "Missy", "gala", "missy")
-            users = TrackingAPI.get_users()
+            Tracking.create_user("Gala", "Missy", "gala", "missy")
+            users = Tracking.get_users()
 
-            @test users isa Array{TrackingAPI.User,1}
+            @test users isa Array{Tracking.User,1}
             @test (users |> length) == 3
         end
 
         @testset verbose = true "update user" begin
-            @test TrackingAPI.update_user(
+            @test Tracking.update_user(
                 2,
                 "Ana",
                 nothing,
                 nothing,
                 nothing,
-            ) isa TrackingAPI.Updated
+            ) isa Tracking.Updated
 
-            user = TrackingAPI.get_user("missy")
+            user = Tracking.get_user("missy")
 
             @test user.first_name == "Ana"
             @test user.last_name == "Gala"
         end
 
         @testset verbose = true "delete user" begin
-            @test TrackingAPI.delete_user(2)
+            @test Tracking.delete_user(2)
 
-            @test TrackingAPI.get_user("missy") |> isnothing
+            @test Tracking.get_user("missy") |> isnothing
         end
     end
 end

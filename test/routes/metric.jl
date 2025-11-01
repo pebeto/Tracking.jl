@@ -1,4 +1,4 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "metric routes" begin
         @testset verbose = true "create metric" begin
             project_payload = Dict("name" => "Metric Project") |> JSON.json
@@ -11,7 +11,7 @@
             project_id = project_data["project_id"]
 
             experiment_payload = Dict(
-                "status_id" => (TrackingAPI.IN_PROGRESS |> Integer),
+                "status_id" => (Tracking.IN_PROGRESS |> Integer),
                 "name" => "Experiment for Metrics",
             ) |> JSON.json
             experiment_response = HTTP.post(
@@ -49,7 +49,7 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            metric = data |> TrackingAPI.Metric
+            metric = data |> Tracking.Metric
 
             @test metric.id isa Int
             @test metric.iteration_id == 1
@@ -72,9 +72,9 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
-            metrics = data .|> TrackingAPI.Metric
+            metrics = data .|> Tracking.Metric
 
-            @test metrics isa Array{TrackingAPI.Metric,1}
+            @test metrics isa Array{Tracking.Metric,1}
             @test (metrics |> length) == 2
         end
 
@@ -98,7 +98,7 @@
                 status_exception=false,
             )
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            metric = data |> TrackingAPI.Metric
+            metric = data |> Tracking.Metric
 
             @test metric.key == "loss"
             @test metric.value == 0.10

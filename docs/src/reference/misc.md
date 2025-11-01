@@ -1,24 +1,24 @@
 # Miscellaneous
 ## Database
 ```@docs
-TrackingAPI.initialize_database
-TrackingAPI.get_database
+Tracking.initialize_database
+Tracking.get_database
 ```
 
 ## Enumerations
 ```@docs
-TrackingAPI.Status
-TrackingAPI.IN_PROGRESS
-TrackingAPI.STOPPED
-TrackingAPI.FINISHED
+Tracking.Status
+Tracking.IN_PROGRESS
+Tracking.STOPPED
+Tracking.FINISHED
 ```
 
 ## Marker types
 ```@docs
-TrackingAPI.UpsertResult
-TrackingAPI.Created
-TrackingAPI.Updated
-TrackingAPI.Duplicate
-TrackingAPI.Unprocessable
-TrackingAPI.Error
+Tracking.UpsertResult
+Tracking.Created
+Tracking.Updated
+Tracking.Duplicate
+Tracking.Unprocessable
+Tracking.Error
 ```

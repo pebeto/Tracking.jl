@@ -1,5 +1,5 @@
 @testset verbose = true "type utilities" begin
-    struct TestType <: TrackingAPI.ResultType
+    struct TestType <: Tracking.ResultType
         a::Int
         b::String
         c::Float64
@@ -7,7 +7,7 @@
 
     @testset verbose = true "constructing a type from a symbol dictionary" begin
         dict = Dict(:a => 1, :b => "test", :c => 3.14)
-        obj = TrackingAPI.type_from_dict(TestType, dict)
+        obj = Tracking.type_from_dict(TestType, dict)
 
         @test obj isa TestType
         @test obj.a == 1
@@ -17,7 +17,7 @@
 
     @testset verbose = true "constructing a type from a string dictionary" begin
         dict = Dict("a" => 1, "b" => "test", "c" => 3.14)
-        obj = TrackingAPI.type_from_dict(TestType, dict)
+        obj = Tracking.type_from_dict(TestType, dict)
 
         @test obj isa TestType
         @test obj.a == 1
@@ -27,7 +27,7 @@
 
     @testset verbose = true "handling extra fields" begin
         dict = Dict(:a => 1, :b => "test", :c => 3.14, :d => "extra")
-        obj = TrackingAPI.type_from_dict(TestType, dict)
+        obj = Tracking.type_from_dict(TestType, dict)
 
         @test obj isa TestType
         @test obj.a == 1
@@ -48,6 +48,6 @@
     @testset verbose = true "error on invalid field types" begin
         dict = Dict(:a => "not an int", :b => "test", :c => 3.14)
 
-        @test_throws ArgumentError TrackingAPI.type_from_dict(TestType, dict)
+        @test_throws ArgumentError Tracking.type_from_dict(TestType, dict)
     end
 end

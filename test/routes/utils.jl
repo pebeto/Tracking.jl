@@ -1,18 +1,18 @@
 @testset verbose = true "routes utilities" begin
     @testset verbose = true "get status by upsert result" begin
         upsert_result_to_status = [
-            (TrackingAPI.Created(), HTTP.StatusCodes.CREATED),
-            (TrackingAPI.Duplicate(), HTTP.StatusCodes.CONFLICT),
-            (TrackingAPI.Unprocessable(), HTTP.StatusCodes.UNPROCESSABLE_ENTITY),
-            (TrackingAPI.Error(), HTTP.StatusCodes.INTERNAL_SERVER_ERROR),
+            (Tracking.Created(), HTTP.StatusCodes.CREATED),
+            (Tracking.Duplicate(), HTTP.StatusCodes.CONFLICT),
+            (Tracking.Unprocessable(), HTTP.StatusCodes.UNPROCESSABLE_ENTITY),
+            (Tracking.Error(), HTTP.StatusCodes.INTERNAL_SERVER_ERROR),
         ]
 
         for (upsert_result, status) in upsert_result_to_status
-            @test TrackingAPI.get_status_by_upsert_result(upsert_result) == status
+            @test Tracking.get_status_by_upsert_result(upsert_result) == status
         end
     end
 
-    @with_trackingapi_test_db begin
+    @with_deardiary_test_db begin
         @testset verbose = true "admin required macro" begin
             @testset verbose = true "as an admin" begin
                 payload = Dict(

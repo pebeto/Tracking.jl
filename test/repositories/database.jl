@@ -1,18 +1,18 @@
 @testset verbose = true "database utilities" begin
     @testset verbose = true "get database" begin
         @testset "check memoization" begin
-            db1 = TrackingAPI.get_database()
-            db2 = TrackingAPI.get_database()
+            db1 = Tracking.get_database()
+            db2 = Tracking.get_database()
 
             @test db1 === db2
         end
     end
 
     @testset "initialize database" begin
-        TrackingAPI.initialize_database()
+        Tracking.initialize_database()
 
         rows = DBInterface.execute(
-            TrackingAPI.get_database(),
+            Tracking.get_database(),
             "SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name",
         )
 

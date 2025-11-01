@@ -1,4 +1,4 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "project routes" begin
         @testset verbose = true "create project" begin
             payload = Dict("name" => "Missy project") |> JSON.json
@@ -21,7 +21,7 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            project = data |> TrackingAPI.Project
+            project = data |> Tracking.Project
 
             @test project.id isa Int
             @test project.name == "Missy project"
@@ -41,9 +41,9 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
-            projects = data .|> TrackingAPI.Project
+            projects = data .|> Tracking.Project
 
-            @test projects isa Array{TrackingAPI.Project,1}
+            @test projects isa Array{Tracking.Project,1}
             @test (projects |> length) == 2
         end
 
@@ -64,7 +64,7 @@
 
             response = HTTP.get("http://127.0.0.1:9000/project/2"; status_exception=false)
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            project = data |> TrackingAPI.Project
+            project = data |> Tracking.Project
 
             @test project.name == "Gala project"
             @test project.description == "Updated project"

@@ -7,7 +7,7 @@ using Compat
 using SQLite
 using Memoize
 
-using TrackingAPI
+using Tracking
 
 """
     create_test_env_file()::String
@@ -19,39 +19,39 @@ A string representing the path to the created test environment file.
 """
 function create_test_env_file(;
     host::String="127.0.0.1",
-    db_file::String="trackingapi_test.db",
+    db_file::String="deardiary_test.db",
     jwt_secret::Union{String,Nothing}=nothing,
     enable_auth::Bool=false,
     enable_api::Bool=false
 )::String
-    file = ".env.trackingapitest"
+    file = ".env.deardiarytest"
 
     open(file, "w") do io
-        write(io, "TRACKINGAPI_HOST=$host\n")
-        write(io, "TRACKINGAPI_DB_FILE=$db_file\n")
-        write(io, "# TRACKINGAPI_DB_FILE=comment\n")
+        write(io, "DEARDIARY_HOST=$host\n")
+        write(io, "DEARDIARY_DB_FILE=$db_file\n")
+        write(io, "# DEARDIARY_DB_FILE=comment\n")
         if !(jwt_secret |> isnothing)
-            write(io, "TRACKINGAPI_JWT_SECRET=$jwt_secret\n")
+            write(io, "DEARDIARY_JWT_SECRET=$jwt_secret\n")
         end
-        write(io, "TRACKINGAPI_ENABLE_AUTH=$enable_auth\n")
-        write(io, "TRACKINGAPI_ENABLE_API=$enable_api\n")
+        write(io, "DEARDIARY_ENABLE_AUTH=$enable_auth\n")
+        write(io, "DEARDIARY_ENABLE_API=$enable_api\n")
     end
     return file
 end
 
-macro with_trackingapi_test_db(expr)
+macro with_deardiary_test_db(expr)
     quote
-        TrackingAPI.initialize_database()
+        Tracking.initialize_database()
 
         try
             $(expr |> esc)
         finally
             if isdefined(Main, :api_config)
-                "trackingapi_test.db" |> rm
+                "deardiary_test.db" |> rm
             else
-                "trackingapi.db" |> rm
+                "deardiary.db" |> rm
             end
-            TrackingAPI.get_database |> memoize_cache |> empty!
+            Tracking.get_database |> memoize_cache |> empty!
         end
     end
 end
@@ -88,17 +88,17 @@ file |> rm
 
 # Auth tests
 file = create_test_env_file(; enable_auth=true, enable_api=true)
-TrackingAPI.run(; env_file=file)
+Tracking.run(; env_file=file)
 
 include("routes/auth.jl")
 include("routes/utils.jl")
 
-TrackingAPI.stop()
+Tracking.stop()
 file |> rm
 
 # Route tests
 file = create_test_env_file(; enable_api=true)
-TrackingAPI.run(; env_file=file)
+Tracking.run(; env_file=file)
 
 include("routes/health.jl")
 include("routes/user.jl")
@@ -110,5 +110,5 @@ include("routes/parameter.jl")
 include("routes/metric.jl")
 include("routes/resource.jl")
 
-TrackingAPI.stop()
+Tracking.stop()
 file |> rm

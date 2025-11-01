@@ -1,4 +1,4 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "experiment routes" begin
         @testset verbose = true "create experiment" begin
             project_payload = Dict("name" => "Test Project") |> JSON.json
@@ -11,7 +11,7 @@
             project_id = project_data["project_id"]
 
             payload = Dict(
-                "status_id" => (TrackingAPI.IN_PROGRESS |> Integer),
+                "status_id" => (Tracking.IN_PROGRESS |> Integer),
                 "name" => "Test Experiment",
             ) |> JSON.json
             response = HTTP.post(
@@ -33,11 +33,11 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            experiment = data |> TrackingAPI.Experiment
+            experiment = data |> Tracking.Experiment
 
             @test experiment.id isa Int
             @test experiment.project_id == 1
-            @test experiment.status_id == (TrackingAPI.IN_PROGRESS |> Integer)
+            @test experiment.status_id == (Tracking.IN_PROGRESS |> Integer)
             @test experiment.name == "Test Experiment"
             @test experiment.description |> isempty
             @test experiment.created_date isa DateTime
@@ -45,7 +45,7 @@
 
         @testset verbose = true "get experiments" begin
             payload = Dict(
-                "status_id" => TrackingAPI.FINISHED |> Integer,
+                "status_id" => Tracking.FINISHED |> Integer,
                 "name" => "Second Experiment",
             ) |> JSON.json
             HTTP.post(
@@ -61,15 +61,15 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
-            experiments = data .|> TrackingAPI.Experiment
+            experiments = data .|> Tracking.Experiment
 
-            @test experiments isa Array{TrackingAPI.Experiment,1}
+            @test experiments isa Array{Tracking.Experiment,1}
             @test (experiments |> length) == 2
         end
 
         @testset verbose = true "update experiment" begin
             payload = Dict(
-                "status_id" => TrackingAPI.STOPPED |> Integer,
+                "status_id" => Tracking.STOPPED |> Integer,
                 "name" => nothing,
                 "description" => "Updated experiment",
                 "end_date" => nothing,
@@ -89,9 +89,9 @@
                 status_exception=false,
             )
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            experiment = data |> TrackingAPI.Experiment
+            experiment = data |> Tracking.Experiment
 
-            @test experiment.status_id == (TrackingAPI.STOPPED |> Integer)
+            @test experiment.status_id == (Tracking.STOPPED |> Integer)
             @test experiment.name == "Second Experiment"
             @test experiment.description == "Updated experiment"
         end

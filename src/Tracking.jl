@@ -1,4 +1,4 @@
-module TrackingAPI
+module Tracking
 
 using Oxygen: headers
 using HTTP
@@ -147,15 +147,15 @@ function run(; env_file::String=".env")
     global api_config = env_file |> load_config
 
     if !api_config.enable_api
-        error("API server is disabled. Set TRACKINGAPI_ENABLE_API=true to enable it.")
+        error("API server is disabled. Set DEARDIARY_ENABLE_API=true to enable it.")
     end
 
     initialize_database()
 
     @get "/health" function (::HTTP.Request)
         data = Dict(
-            "app_name" => TrackingAPI |> nameof |> String,
-            "package_version" => TrackingAPI |> pkgversion,
+            "app_name" => Tracking |> nameof |> String,
+            "package_version" => Tracking |> pkgversion,
             "server_time" => Dates.now(),
         )
         return json(data; status=HTTP.StatusCodes.OK)

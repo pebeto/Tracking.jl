@@ -1,4 +1,4 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "user routes" begin
         @testset verbose = true "create user" begin
             payload = Dict(
@@ -12,7 +12,7 @@
                 body=payload,
                 status_exception=false,
             )
-            username_user = TrackingAPI.get_user("missy")
+            username_user = Tracking.get_user("missy")
 
             @test response.status == HTTP.StatusCodes.CREATED
             data = JSON.parse(response.body |> String, Dict{String,Any})
@@ -20,7 +20,7 @@
         end
 
         @testset verbose = true "get user by id" begin
-            username_user = TrackingAPI.get_user("missy")
+            username_user = Tracking.get_user("missy")
             response = HTTP.get(
                 "http://127.0.0.1:9000/user/$(username_user.id)";
                 status_exception=false,
@@ -28,7 +28,7 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            user = data |> TrackingAPI.User
+            user = data |> Tracking.User
 
             @test user.id isa Int
             @test user.first_name == "Missy"
@@ -50,14 +50,14 @@
 
             @test response.status == HTTP.StatusCodes.OK
             data = JSON.parse(response.body |> String, Array{Dict{String,Any},1})
-            users = data .|> TrackingAPI.User
+            users = data .|> Tracking.User
 
-            @test users isa Array{TrackingAPI.User,1}
+            @test users isa Array{Tracking.User,1}
             @test (users |> length) == 3
         end
 
         @testset verbose = true "update user" begin
-            username_user = TrackingAPI.get_user("missy")
+            username_user = Tracking.get_user("missy")
             payload = Dict(
                 "first_name" => "Ana",
                 "last_name" => nothing,
@@ -78,14 +78,14 @@
                 status_exception=false,
             )
             data = JSON.parse(response.body |> String, Dict{String,Any})
-            user = data |> TrackingAPI.User
+            user = data |> Tracking.User
 
             @test user.first_name == "Ana"
             @test user.last_name == "Gala"
         end
 
         @testset verbose = true "delete user" begin
-            username_user = TrackingAPI.get_user("missy")
+            username_user = Tracking.get_user("missy")
             response = HTTP.delete(
                 "http://127.0.0.1:9000/user/$(username_user.id)";
                 status_exception=false,

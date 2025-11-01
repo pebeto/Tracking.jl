@@ -1,16 +1,16 @@
-@with_trackingapi_test_db begin
+@with_deardiary_test_db begin
     @testset verbose = true "project repository" begin
         @testset verbose = true "insert" begin
-            @test TrackingAPI.insert(
-                TrackingAPI.Project,
+            @test Tracking.insert(
+                Tracking.Project,
                 "Project Missy",
-            ) isa Tuple{Integer,TrackingAPI.Created}
+            ) isa Tuple{Integer,Tracking.Created}
         end
 
         @testset verbose = true "fetch" begin
-            project = TrackingAPI.fetch(TrackingAPI.Project, 1)
+            project = Tracking.fetch(Tracking.Project, 1)
 
-            @test project isa TrackingAPI.Project
+            @test project isa Tracking.Project
             @test project.id == 1
             @test project.name == "Project Missy"
             @test project.description |> isempty
@@ -18,30 +18,30 @@
         end
 
         @testset verbose = true "fetch all" begin
-            TrackingAPI.insert(TrackingAPI.Project, "Project Gala")
+            Tracking.insert(Tracking.Project, "Project Gala")
 
-            projects = TrackingAPI.Project |> TrackingAPI.fetch_all
+            projects = Tracking.Project |> Tracking.fetch_all
 
-            @test projects isa Array{TrackingAPI.Project,1}
+            @test projects isa Array{Tracking.Project,1}
             @test (projects |> length) == 2
         end
 
         @testset verbose = true "update" begin
-            @test TrackingAPI.update(
-                TrackingAPI.Project, 1;
+            @test Tracking.update(
+                Tracking.Project, 1;
                 name="Project Choclo",
                 description="Updated project"
-            ) isa TrackingAPI.Updated
+            ) isa Tracking.Updated
 
-            project = TrackingAPI.fetch(TrackingAPI.Project, 1)
+            project = Tracking.fetch(Tracking.Project, 1)
 
             @test project.name == "Project Choclo"
             @test project.description == "Updated project"
         end
 
         @testset verbose = true "delete" begin
-            @test TrackingAPI.delete(TrackingAPI.Project, 1)
-            @test TrackingAPI.fetch(TrackingAPI.Project, 1) |> isnothing
+            @test Tracking.delete(Tracking.Project, 1)
+            @test Tracking.fetch(Tracking.Project, 1) |> isnothing
         end
     end
 end

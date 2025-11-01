@@ -12,8 +12,8 @@ An [`APIConfig`](@ref) object containing the loaded environment variables.
 function load_config(file::AbstractString)::APIConfig
     host = "localhost"
     port = 9000
-    db_file = "trackingapi.db"
-    jwt_secret = "trackingapi_secret"
+    db_file = "deardiary.db"
+    jwt_secret = "deardiary_secret"
     enable_auth = false
     enable_api = false
 
@@ -26,24 +26,24 @@ function load_config(file::AbstractString)::APIConfig
                 env_vars[key] = value
             end
         end
-        host = get(env_vars, "TRACKINGAPI_HOST", host)
+        host = get(env_vars, "DEARDIARY_HOST", host)
 
-        port = if haskey(env_vars, "TRACKINGAPI_PORT")
-            parse(Int, env_vars["TRACKINGAPI_PORT"])
+        port = if haskey(env_vars, "DEARDIARY_PORT")
+            parse(Int, env_vars["DEARDIARY_PORT"])
         else
             port
         end
-        db_file = get(env_vars, "TRACKINGAPI_DB_FILE", db_file)
-        jwt_secret = get(env_vars, "TRACKINGAPI_JWT_SECRET", jwt_secret)
+        db_file = get(env_vars, "DEARDIARY_DB_FILE", db_file)
+        jwt_secret = get(env_vars, "DEARDIARY_JWT_SECRET", jwt_secret)
 
-        enable_auth = if haskey(env_vars, "TRACKINGAPI_ENABLE_AUTH")
-            parse(Bool, env_vars["TRACKINGAPI_ENABLE_AUTH"])
+        enable_auth = if haskey(env_vars, "DEARDIARY_ENABLE_AUTH")
+            parse(Bool, env_vars["DEARDIARY_ENABLE_AUTH"])
         else
             enable_auth
         end
 
-        enable_api = if haskey(env_vars, "TRACKINGAPI_ENABLE_API")
-            parse(Bool, env_vars["TRACKINGAPI_ENABLE_API"])
+        enable_api = if haskey(env_vars, "DEARDIARY_ENABLE_API")
+            parse(Bool, env_vars["DEARDIARY_ENABLE_API"])
         else
             enable_api
         end

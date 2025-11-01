@@ -27,7 +27,7 @@ First, we need to load the dataset that we will be using for this tutorial.
 using MLJ
 using JLSO
 using DataFrames
-using TrackingAPI
+using Tracking
 
 iris = DataFrames.DataFrame(load_iris())
 train, test = partition(iris, 0.8, shuffle=true)
@@ -41,10 +41,10 @@ Before we start tracking our experiments, we need to initialize the database whe
 experiment data will be stored.
 
 ```julia
-TrackingAPI.initialize_database()
+Tracking.initialize_database()
 ```
 
-This will create a local SQLite database file named `trackingapi.db` in the current
+This will create a local SQLite database file named `deardiary.db` in the current
 directory.
 
 ## Creating a new project and experiment
@@ -53,14 +53,14 @@ classification experiment.
 
 ```julia-repl
 julia> project_id, _ = create_project("Tutorial project")
-(1, TrackingAPI.Created())
+(1, Tracking.Created())
 ```
 
 Once we have a project, we can create an experiment within that project.
 
 ```julia-repl
-julia> experiment_id, _ = create_experiment(project_id, TrackingAPI.IN_PROGRESS, "Iris classification experiment")
-(1, TrackingAPI.Created())
+julia> experiment_id, _ = create_experiment(project_id, Tracking.IN_PROGRESS, "Iris classification experiment")
+(1, Tracking.Created())
 ```
 
 !!! note
@@ -134,17 +134,17 @@ iteration = last(get_iterations(experiment_id)) # Checking only the last iterati
 
 ```julia-repl
 julia> get_parameters(iteration.id)
-1-element Vector{TrackingAPI.Parameter}:
- TrackingAPI.Parameter(9, 9, "max_depth", "7")
+1-element Vector{Tracking.Parameter}:
+ Tracking.Parameter(9, 9, "max_depth", "7")
 ```
 
 ```julia-repl
 julia> get_metrics(iteration.id)
-4-element Vector{TrackingAPI.Metric}:
- TrackingAPI.Metric(33, 9, "Accuracy", 0.9583333333333334)
- TrackingAPI.Metric(34, 9, "LogLoss", 1.5018188912132147)
- TrackingAPI.Metric(35, 9, "MisclassificationRate", 0.041666666666666664)
- TrackingAPI.Metric(36, 9, "BrierScore", -0.08333333333333333)
+4-element Vector{Tracking.Metric}:
+ Tracking.Metric(33, 9, "Accuracy", 0.9583333333333334)
+ Tracking.Metric(34, 9, "LogLoss", 1.5018188912132147)
+ Tracking.Metric(35, 9, "MisclassificationRate", 0.041666666666666664)
+ Tracking.Metric(36, 9, "BrierScore", -0.08333333333333333)
 ```
 
 ## Save and load the trained model
@@ -160,14 +160,14 @@ bytes = take!(io)
 
 ```julia-repl
 julia> resource_id, _ = create_resource(experiment_id, "Iris DTC MLJ Machine", bytes)
-(1, TrackingAPI.Created())
+(1, Tracking.Created())
 ```
 
 Then you can load the model back when needed.
 
 ```julia-repl
 julia> resource = get_resource(resource_id)
-TrackingAPI.Resource(1, 1, "Iris DTC MLJ Machine", "", UInt8[...], Dates.DateTime("2025-10-31T15:50:44.120"), nothing)
+Tracking.Resource(1, 1, "Iris DTC MLJ Machine", "", UInt8[...], Dates.DateTime("2025-10-31T15:50:44.120"), nothing)
 ```
 
 ```julia
@@ -187,7 +187,7 @@ The library also provides a built-in REST API to allow the outside world to inte
 your projects. You can start the API server using the following command:
 
 ```julia
-TrackingAPI.run(;)
+Tracking.run(;)
 ```
 
 This will start the API server on `http://localhost:9000`. You can customize the settings
