@@ -6,7 +6,7 @@ A struct representing an experiment within a project.
 Fields
 - `id::Int64`: The unique identifier of the experiment.
 - `project_id::Int64`: The identifier of the project to which the experiment belongs.
-- `status_id::Integer`: The status of the experiment.
+- `status_id::Int64`: The status of the experiment.
 - `name::String`: The name of the experiment.
 - `description::String`: A description of the experiment.
 - `created_date::DateTime`: The date and time when the experiment was created.
@@ -15,7 +15,7 @@ Fields
 struct Experiment <: ResultType
     id::Int64
     project_id::Int64
-    status_id::Integer
+    status_id::Int64
     name::String
     description::String
     created_date::DateTime
@@ -23,12 +23,12 @@ struct Experiment <: ResultType
 end
 
 struct ExperimentCreatePayload <: UpsertType
-    status_id::Integer
+    status_id::Int64
     name::String
 end
 
 struct ExperimentUpdatePayload <: UpsertType
-    status_id::Optional{Integer}
+    status_id::Optional{Int64}
     name::Optional{String}
     description::Optional{String}
     end_date::Optional{DateTime}
