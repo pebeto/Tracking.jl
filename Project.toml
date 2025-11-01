@@ -21,7 +21,7 @@ JWTs = "0.3.2"
 Memoize = "0.4.4"
 Oxygen = "1.7.5"
 SQLite = "1.6.1"
-julia = "1.0"
+julia = "1.10"
 
 [extras]
 Bcrypt = "137488db-d2e6-4fb9-97f3-1e40a263e83c"
