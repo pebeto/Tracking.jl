@@ -110,7 +110,7 @@ function update_experiment(
     end
 
     if !(status_id in (Status |> instances .|> Int))
-        return nothing, Unprocessable()
+        return Unprocessable()
     end
 
     should_be_updated = compare_object_fields(

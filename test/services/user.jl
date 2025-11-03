@@ -39,18 +39,30 @@
         end
 
         @testset verbose = true "update user" begin
-            @test DearDiary.update_user(
-                2,
-                "Ana",
-                nothing,
-                nothing,
-                nothing,
-            ) isa DearDiary.Updated
+            @testset "with non-existing user id" begin
+                @test DearDiary.update_user(
+                    9999,
+                    "Ana",
+                    "Gala",
+                    "Choclo",
+                    true,
+                ) isa DearDiary.Unprocessable
+            end
 
-            user = DearDiary.get_user("missy")
+            @testset "with existing user id" begin
+                @test DearDiary.update_user(
+                    2,
+                    "Ana",
+                    nothing,
+                    "Choclo",
+                    nothing,
+                ) isa DearDiary.Updated
 
-            @test user.first_name == "Ana"
-            @test user.last_name == "Gala"
+                user = DearDiary.get_user("missy")
+
+                @test user.first_name == "Ana"
+                @test user.last_name == "Gala"
+            end
         end
 
         @testset verbose = true "delete user" begin

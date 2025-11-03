@@ -67,13 +67,13 @@
         @test_throws ArgumentError DearDiary.type_from_dict(DateType, dict)
     end
 
-    @testset verbose = true "show method for ResultType" begin
-        struct ShowMethodTestType <: DearDiary.ResultType
-            a::Int
-            b::DateTime
-            c::Array{UInt8,1}
-        end
+    struct ShowMethodTestType <: DearDiary.ResultType
+        a::Int
+        b::DateTime
+        c::Array{UInt8,1}
+    end
 
+    @testset verbose = true "show method for ResultType" begin
         @testset "with UInt8 < 6" begin
             obj = ShowMethodTestType(
                 1,
@@ -104,6 +104,40 @@
             @test occursin("a = 1", output)
             @test occursin("b = 2025-11-02T00:00:00", output)
             @test occursin("c = UInt8[0x01, 0x02, 0x03, …, 0x07, 0x08, 0x09]", output)
+        end
+    end
+
+    @testset verbose = true "show method for array of ResultType" begin
+        @testset "with n < 6" begin
+            objs = [
+                ShowMethodTestType(
+                    i,
+                    DateTime(2025, 11, 02, 0, 0, 0),
+                    UInt8[1, 2, 3],
+                ) for i in 1:4
+            ]
+            io = IOBuffer()
+            DearDiary.show(io, MIME"text/plain"(), objs)
+            output = String(take!(io))
+
+            @test occursin("4-element Vector{ShowMethodTestType}:", output)
+            @test !occursin("⋮", output)
+        end
+
+        @testset "with n > 6" begin
+            objs = [
+                ShowMethodTestType(
+                    i,
+                    DateTime(2025, 11, 02, 0, 0, 0),
+                    UInt8[1, 2, 3],
+                ) for i in 1:10
+            ]
+            io = IOBuffer()
+            DearDiary.show(io, MIME"text/plain"(), objs)
+            output = String(take!(io))
+
+            @test occursin("10-element Vector{ShowMethodTestType}:", output)
+            @test occursin("⋮", output)
         end
     end
 end

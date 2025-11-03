@@ -92,34 +92,45 @@
         end
 
         @testset verbose = true "update metric" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
-            experiment_id, _ = DearDiary.create_experiment(
-                project_id,
-                DearDiary.IN_PROGRESS,
-                "Test experiment",
-            )
-            iteration_id, _ = experiment_id |> DearDiary.create_iteration
-            metric_id, _ = DearDiary.create_metric(
-                iteration_id,
-                "accuracy",
-                0.95,
-            )
+            @testset "with non-existing id" begin
+                update_result = DearDiary.update_metric(
+                    9999,
+                    "accuracy",
+                    0.98,
+                )
+                @test update_result isa DearDiary.Unprocessable
+            end
 
-            metric = metric_id |> DearDiary.get_metric
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Test experiment",
+                )
+                iteration_id, _ = experiment_id |> DearDiary.create_iteration
+                metric_id, _ = DearDiary.create_metric(
+                    iteration_id,
+                    "accuracy",
+                    0.95,
+                )
 
-            update_result = DearDiary.update_metric(
-                metric_id,
-                nothing,
-                0.98,
-            )
-            @test update_result isa DearDiary.Updated
+                metric = metric_id |> DearDiary.get_metric
 
-            updated_metric = metric_id |> DearDiary.get_metric
+                update_result = DearDiary.update_metric(
+                    metric_id,
+                    nothing,
+                    0.98,
+                )
+                @test update_result isa DearDiary.Updated
 
-            @test updated_metric.id == metric_id
-            @test updated_metric.key == "accuracy"
-            @test updated_metric.value == 0.98
+                updated_metric = metric_id |> DearDiary.get_metric
+
+                @test updated_metric.id == metric_id
+                @test updated_metric.key == "accuracy"
+                @test updated_metric.value == 0.98
+            end
         end
 
         @testset verbose = true "delete metric" begin

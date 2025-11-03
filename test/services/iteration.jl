@@ -68,35 +68,47 @@
         end
 
         @testset verbose = true "update iteration" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
-            experiment_id, _ = DearDiary.create_experiment(
-                project_id,
-                DearDiary.IN_PROGRESS,
-                "Test experiment",
-            )
-            iteration_id, _ = DearDiary.create_iteration(experiment_id)
+            @testset "with non-existing id" begin
+                result = DearDiary.update_iteration(
+                    9999,
+                    "Updated iteration notes",
+                    now(),
+                )
 
-            iteration = iteration_id |> DearDiary.get_iteration
+                @test result isa DearDiary.Unprocessable
+            end
 
-            @test iteration.notes |> isempty
-            @test iteration.created_date isa DateTime
-            @test iteration.end_date |> isnothing
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Test experiment",
+                )
+                iteration_id, _ = DearDiary.create_iteration(experiment_id)
 
-            update_result = DearDiary.update_iteration(
-                iteration_id,
-                "Updated iteration notes",
-                now(),
-            )
-            @test update_result isa DearDiary.Updated
+                iteration = iteration_id |> DearDiary.get_iteration
 
-            updated_iteration = iteration_id |> DearDiary.get_iteration
+                @test iteration.notes |> isempty
+                @test iteration.created_date isa DateTime
+                @test iteration.end_date |> isnothing
 
-            @test updated_iteration.id == iteration_id
-            @test updated_iteration.experiment_id == experiment_id
-            @test updated_iteration.notes == "Updated iteration notes"
-            @test updated_iteration.created_date isa DateTime
-            @test updated_iteration.end_date isa DateTime
+                update_result = DearDiary.update_iteration(
+                    iteration_id,
+                    "Updated iteration notes",
+                    now(),
+                )
+                @test update_result isa DearDiary.Updated
+
+                updated_iteration = iteration_id |> DearDiary.get_iteration
+
+                @test updated_iteration.id == iteration_id
+                @test updated_iteration.experiment_id == experiment_id
+                @test updated_iteration.notes == "Updated iteration notes"
+                @test updated_iteration.created_date isa DateTime
+                @test updated_iteration.end_date isa DateTime
+            end
         end
 
         @testset verbose = true "delete iteration" begin

@@ -90,35 +90,48 @@
         end
 
         @testset verbose = true "update resource" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
-            experiment_id, _ = DearDiary.create_experiment(
-                project_id,
-                DearDiary.IN_PROGRESS,
-                "Test Experiment",
-            )
-            resource_id, _ = DearDiary.create_resource(
-                experiment_id,
-                "Test Resource",
-                UInt8[0x0A, 0x0B, 0x0C],
-            )
+            @testset "with non-existing id" begin
+                result = DearDiary.update_resource(
+                    9999,
+                    "Updated Resource",
+                    "This is an updated resource.",
+                    UInt8[0x0D, 0x0E, 0x0F],
+                )
 
-            resource = resource_id |> DearDiary.get_resource
+                @test result isa DearDiary.Unprocessable
+            end
 
-            update_result = DearDiary.update_resource(
-                resource_id,
-                "Updated Resource",
-                "This is an updated resource.",
-                UInt8[0x0D, 0x0E, 0x0F],
-            )
-            @test update_result isa DearDiary.Updated
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Test Experiment",
+                )
+                resource_id, _ = DearDiary.create_resource(
+                    experiment_id,
+                    "Test Resource",
+                    UInt8[0x0A, 0x0B, 0x0C],
+                )
 
-            updated_resource = resource_id |> DearDiary.get_resource
+                resource = resource_id |> DearDiary.get_resource
 
-            @test updated_resource.id == resource_id
-            @test updated_resource.name == "Updated Resource"
-            @test updated_resource.description == "This is an updated resource."
-            @test updated_resource.data == UInt8[0x0D, 0x0E, 0x0F]
+                update_result = DearDiary.update_resource(
+                    resource_id,
+                    "Updated Resource",
+                    "This is an updated resource.",
+                    UInt8[0x0D, 0x0E, 0x0F],
+                )
+                @test update_result isa DearDiary.Updated
+
+                updated_resource = resource_id |> DearDiary.get_resource
+
+                @test updated_resource.id == resource_id
+                @test updated_resource.name == "Updated Resource"
+                @test updated_resource.description == "This is an updated resource."
+                @test updated_resource.data == UInt8[0x0D, 0x0E, 0x0F]
+            end
         end
 
         @testset verbose = true "delete resource" begin

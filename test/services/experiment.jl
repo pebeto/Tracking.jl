@@ -25,6 +25,20 @@
                 @test experiment_id |> isnothing
                 @test result isa DearDiary.Unprocessable
             end
+
+            @testset "with invalid status" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+
+                experiment_id, result = DearDiary.create_experiment(
+                    project_id,
+                    9999,
+                    "Service Test Experiment",
+                )
+
+                @test experiment_id |> isnothing
+                @test result isa DearDiary.Unprocessable
+            end
         end
         @testset verbose = true "get experiment by id" begin
             @testset "existing experiment" begin
@@ -73,30 +87,64 @@
         end
 
         @testset verbose = true "update experiment" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
-            experiment_id, _ = DearDiary.create_experiment(
-                project_id,
-                DearDiary.IN_PROGRESS,
-                "Service Test Experiment",
-            )
+            @testset "with non-existing id" begin
+                result = DearDiary.update_experiment(
+                    9999,
+                    DearDiary.FINISHED,
+                    "Updated Experiment",
+                    "Updated description",
+                    Dates.now(),
+                )
 
-            update_result = DearDiary.update_experiment(
-                experiment_id,
-                DearDiary.FINISHED,
-                "Updated Service Test Experiment",
-                "Updated description",
-                Dates.now(),
-            )
-            @test update_result isa DearDiary.Updated
+                @test result isa DearDiary.Unprocessable
+            end
 
-            experiment = experiment_id |> DearDiary.get_experiment
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Service Test Experiment",
+                )
 
-            @test experiment isa DearDiary.Experiment
-            @test experiment.status_id == DearDiary.FINISHED |> Integer
-            @test experiment.name == "Updated Service Test Experiment"
-            @test experiment.description == "Updated description"
-            @test experiment.end_date isa DateTime
+                update_result = DearDiary.update_experiment(
+                    experiment_id,
+                    DearDiary.FINISHED,
+                    "Updated Service Test Experiment",
+                    "Updated description",
+                    Dates.now(),
+                )
+                @test update_result isa DearDiary.Updated
+
+                experiment = experiment_id |> DearDiary.get_experiment
+
+                @test experiment isa DearDiary.Experiment
+                @test experiment.status_id == DearDiary.FINISHED |> Integer
+                @test experiment.name == "Updated Service Test Experiment"
+                @test experiment.description == "Updated description"
+                @test experiment.end_date isa DateTime
+            end
+
+            @testset "with invalid status" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Service Test Experiment",
+                )
+
+                result = DearDiary.update_experiment(
+                    experiment_id,
+                    9999,
+                    "Updated Experiment",
+                    "Updated description",
+                    Dates.now(),
+                )
+
+                @test result isa DearDiary.Unprocessable
+            end
         end
 
         @testset verbose = true "delete experiment" begin

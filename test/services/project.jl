@@ -13,6 +13,27 @@
                 @test project_id isa Integer
             end
 
+            @testset "with non-existing user_id as argument" begin
+                project_id, project_upsert_result = DearDiary.create_project(
+                    9999,
+                    "Test Project",
+                )
+
+                @test project_id |> isnothing
+                @test project_upsert_result isa DearDiary.Unprocessable
+            end
+
+            @testset "with non-admin user_id as argument" begin
+                user_id, _ = DearDiary.create_user("Regular", "User", "regular", "user")
+                project_id, project_upsert_result = DearDiary.create_project(
+                    user_id,
+                    "Test Project",
+                )
+
+                @test project_id |> isnothing
+                @test project_upsert_result isa DearDiary.Unprocessable
+            end
+
             @testset verbose = true "with no user_id as argument" begin
                 project_id, project_upsert_result = DearDiary.create_project(
                     "Test Project",
@@ -55,16 +76,28 @@
         end
 
         @testset verbose = true "update project" begin
-            @test DearDiary.update_project(
-                1,
-                "Updated Test Project",
-                "Updated Description"
-            ) isa DearDiary.Updated
+            @testset "with non-existing id" begin
+                result = DearDiary.update_project(
+                    9999,
+                    "Updated Test Project",
+                    "Updated Description"
+                )
 
-            project = DearDiary.get_project(1)
+                @test result isa DearDiary.Unprocessable
+            end
 
-            @test project.name == "Updated Test Project"
-            @test project.description == "Updated Description"
+            @testset "with existing id" begin
+                @test DearDiary.update_project(
+                    1,
+                    "Updated Test Project",
+                    "Updated Description"
+                ) isa DearDiary.Updated
+
+                project = DearDiary.get_project(1)
+
+                @test project.name == "Updated Test Project"
+                @test project.description == "Updated Description"
+            end
         end
 
         @testset verbose = true "delete project" begin

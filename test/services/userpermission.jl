@@ -93,27 +93,40 @@
         end
 
         @testset verbose = true "update" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
+            @testset "with non-existing id" begin
+                result = DearDiary.update_userpermission(
+                    9999,
+                    true,
+                    nothing,
+                    nothing,
+                    nothing,
+                )
+                @test result isa DearDiary.Unprocessable
+            end
 
-            userpermission = DearDiary.get_userpermission(user.id, project_id)
-            @test userpermission.create_permission == false
-            @test userpermission.read_permission == true
-            @test userpermission.update_permission == false
-            @test userpermission.delete_permission == false
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
 
-            @test DearDiary.update_userpermission(
-                userpermission.id,
-                true,
-                nothing,
-                nothing,
-                nothing,
-            ) isa DearDiary.Updated
-            userpermission = DearDiary.get_userpermission(user.id, project_id)
-            @test userpermission.create_permission == true
-            @test userpermission.read_permission == true
-            @test userpermission.update_permission == false
-            @test userpermission.delete_permission == false
+                userpermission = DearDiary.get_userpermission(user.id, project_id)
+                @test userpermission.create_permission == false
+                @test userpermission.read_permission == true
+                @test userpermission.update_permission == false
+                @test userpermission.delete_permission == false
+
+                @test DearDiary.update_userpermission(
+                    userpermission.id,
+                    true,
+                    nothing,
+                    nothing,
+                    nothing,
+                ) isa DearDiary.Updated
+                userpermission = DearDiary.get_userpermission(user.id, project_id)
+                @test userpermission.create_permission == true
+                @test userpermission.read_permission == true
+                @test userpermission.update_permission == false
+                @test userpermission.delete_permission == false
+            end
         end
 
         @testset verbose = true "delete" begin

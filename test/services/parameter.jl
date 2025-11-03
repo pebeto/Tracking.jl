@@ -92,34 +92,46 @@
         end
 
         @testset verbose = true "update parameter" begin
-            user = DearDiary.get_user("default")
-            project_id, _ = DearDiary.create_project(user.id, "Test Project")
-            experiment_id, _ = DearDiary.create_experiment(
-                project_id,
-                DearDiary.IN_PROGRESS,
-                "Test experiment",
-            )
-            iteration_id, _ = DearDiary.create_iteration(experiment_id)
-            parameter_id, _ = DearDiary.create_parameter(
-                iteration_id,
-                "learning_rate",
-                "0.01",
-            )
+            @testset "with non-existing id" begin
+                result = DearDiary.update_parameter(
+                    9999,
+                    "momentum",
+                    0.9,
+                )
 
-            parameter = parameter_id |> DearDiary.get_parameter
+                @test result isa DearDiary.Unprocessable
+            end
 
-            update_result = DearDiary.update_parameter(
-                parameter_id,
-                nothing,
-                0.001,
-            )
-            @test update_result isa DearDiary.Updated
+            @testset "with existing id" begin
+                user = DearDiary.get_user("default")
+                project_id, _ = DearDiary.create_project(user.id, "Test Project")
+                experiment_id, _ = DearDiary.create_experiment(
+                    project_id,
+                    DearDiary.IN_PROGRESS,
+                    "Test experiment",
+                )
+                iteration_id, _ = DearDiary.create_iteration(experiment_id)
+                parameter_id, _ = DearDiary.create_parameter(
+                    iteration_id,
+                    "learning_rate",
+                    "0.01",
+                )
 
-            updated_parameter = parameter_id |> DearDiary.get_parameter
+                parameter = parameter_id |> DearDiary.get_parameter
 
-            @test updated_parameter.id == parameter_id
-            @test updated_parameter.key == "learning_rate"
-            @test updated_parameter.value == "0.001"
+                update_result = DearDiary.update_parameter(
+                    parameter_id,
+                    nothing,
+                    0.001,
+                )
+                @test update_result isa DearDiary.Updated
+
+                updated_parameter = parameter_id |> DearDiary.get_parameter
+
+                @test updated_parameter.id == parameter_id
+                @test updated_parameter.key == "learning_rate"
+                @test updated_parameter.value == "0.001"
+            end
         end
 
         @testset verbose = true "delete parameter" begin
