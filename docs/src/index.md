@@ -7,7 +7,7 @@ CurrentModule = DearDiary
 ```
 
 # DearDiary.jl
-*A lightweight but **powerful** experiment tracking tool for Julia.*
+*A lightweight but **powerful** machine learning experiment tracking tool for Julia.*
 
 ```@raw html
 <a class="github-button"

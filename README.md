@@ -1,5 +1,5 @@
 # DearDiary.jl
-*A lightweight but **powerful** experiment tracking tool for Julia.*
+*A lightweight but **powerful** machine learning experiment tracking tool for Julia.*
 
 [![CI](https://github.com/pebeto/DearDiary.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/pebeto/DearDiary.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/github/pebeto/DearDiary.jl/graph/badge.svg?token=Z01WPRJDNR)](https://codecov.io/github/pebeto/DearDiary.jl)
