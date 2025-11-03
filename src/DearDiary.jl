@@ -100,33 +100,59 @@ function AuthMiddleware(handler)
                     JWTs.MD_SHA256,
                     _DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
                 )
-                validate!(jwt, key)
+                try
+                    validate!(jwt, key)
+                catch _
+                    return json(
+                        ("message" => "Invalid token"),
+                        status=HTTP.StatusCodes.UNAUTHORIZED,
+                    )
+                end
 
                 if jwt |> isvalid
                     payload = jwt |> claims
+
+                    if payload |> isnothing
+                        return json(
+                            ("message" => "Invalid token payload"),
+                            status=HTTP.StatusCodes.UNAUTHORIZED,
+                        )
+                    end
 
                     is_valid_payload = all(
                         claim -> haskey(payload, claim),
                         ["sub", "id", "exp"],
                     )
-                    if payload |> isnothing || !is_valid_payload
-                        throw(ArgumentError("Invalid token payload"))
+                    if !is_valid_payload
+                        return json(
+                            ("message" => "Invalid token payload"),
+                            status=HTTP.StatusCodes.UNAUTHORIZED,
+                        )
                     end
 
                     exp = get(payload, "exp", nothing)
                     if exp |> isnothing || (exp isa Integer && exp < (now() |> Dates.value))
-                        throw(ArgumentError("Token expired"))
+                        return json(
+                            ("message" => "Token has expired"),
+                            status=HTTP.StatusCodes.UNAUTHORIZED,
+                        )
                     end
 
                     user_id = get(payload, "id", 0)
                     is_valid_user_id = user_id isa Int && user_id > 0
                     if !is_valid_user_id
-                        throw(ArgumentError("Invalid token payload"))
+                        return json(
+                            ("message" => "Invalid token payload"),
+                            status=HTTP.StatusCodes.UNAUTHORIZED,
+                        )
                     end
 
                     user = get_user(user_id)
                     if user |> isnothing
-                        throw(ArgumentError("User not found"))
+                        return json(
+                            ("message" => "User not found"),
+                            status=HTTP.StatusCodes.UNAUTHORIZED,
+                        )
                     end
                     request.context[:user] = user
                 else

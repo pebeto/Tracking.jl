@@ -25,10 +25,10 @@ julia = "1.10"
 Bcrypt = "137488db-d2e6-4fb9-97f3-1e40a263e83c"
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JWTs = "d850fbd6-035d-5a70-a269-1ca2e636ac6c"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-Mocking = "78c3b35d-d492-501b-9361-3d52fe80e533"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Compat", "HTTP", "JSON", "Mocking", "SQLite", "Test"]
+test = ["Bcrypt", "Compat", "HTTP", "JWTs", "JSON", "SQLite", "Test"]

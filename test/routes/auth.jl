@@ -40,7 +40,7 @@
         end
 
         @testset verbose = true "with authorization header" begin
-            @testset verbose = true "with valid JWT" begin
+            @testset "with valid JWT" begin
                 payload = Dict(
                     "username" => "default",
                     "password" => "default",
@@ -60,6 +60,155 @@
                 )
 
                 @test response.status == HTTP.StatusCodes.OK
+            end
+
+            @testset "with invalid JWT validation process" begin
+                token = "invalid.token.string"
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Invalid token")
+            end
+
+            @testset "with invalid JWT" begin
+                claims = Dict(
+                    "sub" => "default",
+                    "id" => 1,
+                    "exp" => (now() + Hour(1)) |> Dates.value,
+                )
+                jwt = JWT(; payload=claims)
+                key = JWKSymmetric(JWTs.MD_SHA256, "incorrect secret" |> Array{UInt8,1})
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Invalid token")
+            end
+
+            @testset "with valid JWT but empty payload" begin
+                jwt = JWT(; payload=Dict())
+                key = JWKSymmetric(
+                    JWTs.MD_SHA256,
+                    DearDiary._DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
+                )
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Invalid token payload")
+            end
+
+            @testset "with expired JWT" begin
+                claims = Dict(
+                    "sub" => "default",
+                    "id" => 1,
+                    "exp" => (now() - Hour(1)) |> Dates.value,
+                )
+                jwt = JWT(; payload=claims)
+                key = JWKSymmetric(
+                    JWTs.MD_SHA256,
+                    DearDiary._DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
+                )
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Token has expired")
+            end
+
+            @testset "with string as id in JWT" begin
+                claims = Dict(
+                    "sub" => "default",
+                    "id" => "one",
+                    "exp" => (now() + Hour(1)) |> Dates.value,
+                )
+                jwt = JWT(; payload=claims)
+                key = JWKSymmetric(
+                    JWTs.MD_SHA256,
+                    DearDiary._DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
+                )
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Invalid token payload")
+            end
+
+            @testset "with zero as id in JWT" begin
+                claims = Dict(
+                    "sub" => "default",
+                    "id" => 0,
+                    "exp" => (now() + Hour(1)) |> Dates.value,
+                )
+                jwt = JWT(; payload=claims)
+                key = JWKSymmetric(
+                    JWTs.MD_SHA256,
+                    DearDiary._DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
+                )
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("Invalid token payload")
+            end
+
+            @testset "with non-existing user id in JWT" begin
+                claims = Dict(
+                    "sub" => "default",
+                    "id" => 9999,
+                    "exp" => (now() + Hour(1)) |> Dates.value,
+                )
+                jwt = JWT(; payload=claims)
+                key = JWKSymmetric(
+                    JWTs.MD_SHA256,
+                    DearDiary._DEARDIARY_APICONFIG.jwt_secret |> Array{UInt8,1},
+                )
+                sign!(jwt, key)
+                token = jwt |> string
+
+                response = HTTP.get(
+                    "http://127.0.0.1:9000/user/1";
+                    headers=Dict("Authorization" => "Bearer $token"),
+                    status_exception=false,
+                )
+
+                @test response.status == HTTP.StatusCodes.UNAUTHORIZED
+                @test response.body |> String |> contains("User not found")
             end
         end
     end

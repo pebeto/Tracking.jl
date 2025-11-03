@@ -1,5 +1,5 @@
 @testset verbose = true "load config" begin
-    file = create_test_env_file(; host="0.0.0.0")
+    file = create_test_env_file(; host="0.0.0.0", port=9000)
 
     @testset "file exists" begin
         config = file |> DearDiary.load_config

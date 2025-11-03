@@ -1,5 +1,6 @@
 using HTTP
 using JSON
+using JWTs
 using Test
 using Dates
 using Bcrypt
@@ -17,15 +18,17 @@ Create a test environment file for the API server.
 A string representing the path to the created test environment file.
 """
 function create_test_env_file(;
-    host::String="127.0.0.1",
-    db_file::String="deardiary_test.db",
-    jwt_secret::Union{String,Nothing}=nothing,
+    host::AbstractString="127.0.0.1",
+    port::Integer=9000,
+    db_file::AbstractString="deardiary_test.db",
+    jwt_secret::Union{AbstractString,Nothing}=nothing,
     enable_auth::Bool=false,
 )::String
     file = ".env.deardiarytest"
 
     open(file, "w") do io
         write(io, "DEARDIARY_HOST=$host\n")
+        write(io, "DEARDIARY_PORT=$port\n")
         write(io, "DEARDIARY_DB_FILE=$db_file\n")
         write(io, "# DEARDIARY_DB_FILE=comment\n")
         if !(jwt_secret |> isnothing)
