@@ -74,7 +74,7 @@ export get_parameter, get_parameters, create_parameter, update_parameter, delete
 export get_metric, get_metrics, create_metric, update_metric, delete_metric
 export get_resource, get_resources, create_resource, update_resource, delete_resource
 
-_DEARDIARY_APICONFIG::Union{APIConfig,Nothing} = nothing
+_DEARDIARY_APICONFIG = nothing
 
 function AuthMiddleware(handler)
     return function (request::HTTP.Request)

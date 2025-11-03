@@ -1,4 +1,4 @@
-_DEARDIARY_DATABASE::Union{SQLite.DB,Nothing} = nothing
+_DEARDIARY_DATABASE = nothing
 
 """
     get_database()::Union{SQLite.DB,Nothing}
